@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NÓIMA · Website directions</title>
+<link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --navy:#08182E; --bronze:#A88250; --line:#DCDFE5; --muted:#5B6678; --bg:#FFFFFF; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--navy); font:16px/1.55 Inter, system-ui, sans-serif; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:1120px; margin:0 auto; padding:0 24px; }
+  header { padding:40px 0 0; }
+  header img { width:210px; height:auto; display:block; }
+  .intro { padding:72px 0 56px; max-width:720px; }
+  .label { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 16px; }
+  h1 { font-size:clamp(34px,5.2vw,56px); line-height:1.08; letter-spacing:-.02em; font-weight:500; margin:0 0 20px; text-wrap:balance; }
+  .intro p { color:var(--muted); font-size:18px; margin:0; text-wrap:pretty; }
+  .list { border-top:1px solid var(--navy); margin:0 0 72px; padding:0; list-style:none; }
+  .list li { border-bottom:1px solid var(--line); }
+  .row { display:grid; grid-template-columns:72px 1fr 1.25fr 36px; gap:24px; align-items:start; padding:32px 0; color:inherit; text-decoration:none; }
+  .num { font-size:14px; color:var(--muted); font-variant-numeric:tabular-nums; padding-top:9px; }
+  .name { font-size:clamp(26px,3.2vw,36px); line-height:1.1; letter-spacing:-.015em; font-weight:500; margin:0 0 8px; }
+  .idea { margin:0; color:var(--navy); max-width:38ch; }
+  dl { margin:6px 0 0; display:grid; grid-template-columns:96px 1fr; gap:6px 16px; font-size:14px; }
+  dt { color:var(--muted); }
+  dd { margin:0; }
+  .go { font-size:22px; line-height:1; padding-top:8px; text-align:right; transition:transform .25s ease, color .25s ease; }
+  .row:hover .go, .row:focus-visible .go { transform:translateX(6px); color:var(--bronze); }
+  .row:hover .name, .row:focus-visible .name { text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:6px; }
+  .row:focus-visible { outline:2px solid var(--bronze); outline-offset:4px; }
+  .notes { border-top:1px solid var(--line); padding:32px 0 80px; color:var(--muted); font-size:14px; max-width:760px; }
+  .notes p { margin:0 0 10px; }
+  .sub { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 14px; }
+  .mix { display:grid; grid-template-columns:72px 1fr 1.25fr; gap:24px; align-items:start; padding:32px 0; }
+  .mix .name a { color:inherit; text-decoration:none; }
+  .mix .name a:hover { text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:6px; }
+  .mix dl { grid-template-columns:110px 1fr; }
+  .acts { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+  .btn { display:inline-flex; align-items:center; min-height:44px; padding:0 20px; border-radius:999px; border:1px solid var(--navy); color:var(--navy); text-decoration:none; font-size:14px; font-weight:500; transition:background .25s ease, color .25s ease, border-color .25s ease; }
+  .btn.solid { background:var(--navy); color:#fff; }
+  .btn:hover, .btn:focus-visible { background:var(--bronze); border-color:var(--bronze); color:#fff; }
+  @media (max-width:760px) { .mix { grid-template-columns:36px 1fr; gap:12px; padding:26px 0; } .mix .spec { grid-column:2; } .mix dl { grid-template-columns:84px 1fr; } }
+  @media (max-width:760px) {
+    header { padding-top:28px; } header img { width:170px; }
+    .intro { padding:48px 0 40px; } .intro p { font-size:16px; }
+    .row { grid-template-columns:36px 1fr 24px; gap:12px; padding:26px 0; }
+    .row .spec { grid-column:2 / 3; grid-row:2; }
+    .go { grid-column:3; grid-row:1; }
+    dl { grid-template-columns:84px 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><img src="assets/brand/noima-horizontal-bronze-navy-transparent.svg" alt="NÓIMA · Data · Analytics · Automation"></header>
+
+  <section class="intro">
+    <p class="label">Website directions · sample pages</p>
+    <h1>Five revisions, built from your notes on the mixes.</h1>
+    <p>Round four is desktop first. Every site now uses only the light beige, white and navy grounds, blends from one ground to the next as you scroll, shows its service examples as pictures in dark panels, and has an even Name and symbol section. The sea footage is gone: film and photographs now show clockwork and the night sky.</p>
+  </section>
+
+  <p class="sub">Round four · the revisions</p>
+  <ol class="list">
+    <li><div class="mix">
+      <span class="num">16</span>
+      <div><h2 class="name"><a href="16-meridian-ii/index.html">Meridian II</a></h2><p class="idea">The clean, professional one: serif headings, rectangular buttons, clockwork film beside the headline.</p>
+        <div class="acts"><a class="btn solid" href="16-meridian-ii/index.html">Open</a></div></div>
+      <dl class="spec"><dt>From</dt><dd>11 Meridian</dd><dt>Changed</dt><dd>Rectangular buttons, new film and image, dark example panels, fixed step line</dd><dt>Added</dt><dd>From raw to readable (the lens)</dd></dl>
+    </div></li>
+    <li><div class="mix">
+      <span class="num">17</span>
+      <div><h2 class="name"><a href="17-constellation-ii/index.html">Constellation II</a></h2><p class="idea">The dots on scroll, untouched, with the sections around them tidied.</p>
+        <div class="acts"><a class="btn solid" href="17-constellation-ii/index.html">Open</a></div></div>
+      <dl class="spec"><dt>From</dt><dd>12 Constellation</dd><dt>Changed</dt><dd>Dark example panels, no darker beige, even Name and symbol</dd><dt>Kept</dt><dd>Dots, rounded buttons</dd></dl>
+    </div></li>
+    <li><div class="mix">
+      <span class="num">18</span>
+      <div><h2 class="name"><a href="18-mechanism-ii/index.html">Mechanism II</a></h2><p class="idea">The turning gear and the closing logo, with services shown as pictures rather than more text.</p>
+        <div class="acts"><a class="btn solid" href="18-mechanism-ii/index.html">Open</a></div></div>
+      <dl class="spec"><dt>From</dt><dd>13 Mechanism</dd><dt>Changed</dt><dd>What we do rebuilt with example panels, less text</dd><dt>Kept</dt><dd>Mechanism, scroll animations, the ending</dd></dl>
+    </div></li>
+    <li><div class="mix">
+      <span class="num">19</span>
+      <div><h2 class="name"><a href="19-atelier-ii/index.html">Atelier II</a></h2><p class="idea">A refined gear diagram, three animated examples, and no more jump from light to dark.</p>
+        <div class="acts"><a class="btn solid" href="19-atelier-ii/index.html">Open</a></div></div>
+      <dl class="spec"><dt>From</dt><dd>14 Atelier</dd><dt>Changed</dt><dd>Smaller gear, clearer labels, Automation on a light ground</dd><dt>Added</dt><dd>The gear becomes the logo at the end</dd></dl>
+    </div></li>
+    <li><div class="mix">
+      <span class="num">21</span>
+      <div><h2 class="name"><a href="21-synthesis/index.html">Synthesis</a></h2><p class="idea">Everything you marked as loved, in one clean site.</p>
+        <div class="acts"><a class="btn solid" href="21-synthesis/index.html">Open</a></div></div>
+      <dl class="spec"><dt>Look</dt><dd>Meridian: serif headings, rectangular buttons, half-page film</dd><dt>Motion</dt><dd>Constellation's dots, the lens, smooth ground changes</dd><dt>Ending</dt><dd>Mechanism's symbol joining the last page</dd></dl>
+    </div></li>
+  </ol>
+
+  
+
+  <div class="notes">
+    <p>The five share one base: light beige, white and navy grounds, medium-weight type, moderate headings and the updated logo.</p>
+    <p>These are samples to choose a direction from, not finished sites: links stay on the page and the contact button opens an email.</p>
+    <p>Charts and screens in the samples are illustrative, not client work. Photo credits are in <a href="assets/CREDITS.md" style="color:inherit">assets/CREDITS.md</a>.</p>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,958 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NÓIMA · Mechanism II</title>
+<meta name="description" content="NÓIMA is a data engineering, analytics and automation consultancy. Make sense of your data.">
+<link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js')</script>
+<style>
+@font-face{font-family:"GFS Neohellenic";src:url("../assets/fonts/GFSNeohellenic.ttf") format("truetype");font-display:swap}
+:root{
+  --ivory:#FAF6EF; --white:#FFFFFF; --navy:#08182E;
+  --pad:clamp(24px,5vw,72px);
+  --col:600px; --wcol:600px;
+  --theme:color 0s; /* ground changes are scroll-linked: no timed colour transition */
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  --bg:var(--ivory); --ink:#08182E; --muted:#556074; --line:rgba(8,24,46,.16);
+  --accent:#A88250; --gear:#A88250; --ring:#08182E; --btn-ink:#FFFFFF; --dockbg:#FFFFFF;
+  margin:0; background:var(--bg); color:var(--ink);
+  font:400 17px/1.6 Outfit, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing:antialiased; transition:var(--theme); overflow-x:clip;
+}
+/* --bg, --ink, --muted, --line, --accent, --gear, --ring, --btn-ink and --dockbg are written by the scroll handler */
+.gr{font-family:"GFS Neohellenic", Outfit, serif; font-size:1.12em; line-height:1}
+h1,h2,h3,p,ul,ol,dl,dd,figure,blockquote{margin:0}
+ul,ol{padding:0;list-style:none}
+p,li,dt,dd,summary,figcaption,a,button,.label{transition:var(--theme)}
+a{color:inherit}
+img{max-width:100%;height:auto;display:block}
+.label{font-size:13px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:clamp(40px,4.4vw,60px);line-height:1.06;font-weight:500;letter-spacing:-.015em;text-wrap:balance}
+h2{font-size:clamp(30px,3vw,40px);line-height:1.14;font-weight:500;letter-spacing:-.01em;text-wrap:balance}
+h3{font-size:22px;line-height:1.25;font-weight:500}
+.em{color:var(--accent);transition:var(--theme)}
+.lead{font-size:19px;color:var(--muted);max-width:34em;text-wrap:pretty}
+.muted{color:var(--muted)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 26px;border-radius:999px;
+  border:1px solid var(--ink);background:var(--ink);color:var(--btn-ink);font:500 16px/1 Outfit, system-ui, sans-serif;text-decoration:none;cursor:pointer;
+  transition:background-color .3s ease,color .3s ease,border-color .3s ease,transform .3s ease}
+.btn .ar{display:inline-block;transition:transform .3s ease}
+.btn:hover,.btn:focus-visible{background:var(--accent);border-color:var(--accent);color:var(--btn-ink)}
+.btn:hover .ar,.btn:focus-visible .ar{transform:translateX(5px)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover,.btn.ghost:focus-visible{background:transparent;border-color:var(--accent);color:var(--accent)}
+.btn:active{transform:scale(.98)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+
+/* reveals */
+.js .rv{opacity:0;transform:translateY(22px);transition:opacity .9s ease var(--d,0s),transform .9s cubic-bezier(.2,.7,.2,1) var(--d,0s),var(--theme)}
+.js .rv.in{opacity:1;transform:none}
+
+/* header */
+.top{position:relative;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:28px var(--pad) 0;min-height:72px}
+.logo{display:grid;text-decoration:none}
+.logo img{grid-area:1/1;width:196px;transition:opacity .6s ease}
+.logo .lg-d{opacity:0}
+body[data-ground="navy"] .logo .lg-l{opacity:0}
+body[data-ground="navy"] .logo .lg-d{opacity:1}
+.top .right{display:flex;gap:10px;align-items:center}
+.top .btn{min-height:44px;padding:0 20px;font-size:15px}
+.menu-btn{display:none}
+
+/* sections */
+main{position:relative;z-index:2}
+section{padding:clamp(120px,14vh,150px) var(--pad)}
+main > section{min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+.in-col{max-width:var(--col)}
+.in-wide{max-width:var(--wcol)}
+.sec-h{display:grid;gap:18px;margin-bottom:56px}
+#home{min-height:calc(100vh - 100px);display:flex;flex-direction:row;justify-content:flex-start;align-items:center;padding-top:40px;padding-bottom:80px}
+#home .in-col{display:grid;gap:26px}
+#home .def{font-size:16px;color:var(--muted)}
+#home .def .gr{font-size:24px;color:var(--ink);margin-right:8px;transition:var(--theme)}
+.hint{display:none}
+
+/* what we do: short copy beside a navy picture panel */
+.svc{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:40px 64px;align-items:center;padding:76px 0;border-top:1px solid var(--line)}
+.svc:last-child{padding-bottom:0}
+.svc-copy{display:grid;gap:16px;align-content:start}
+.svc .n{font-size:13px;font-weight:500;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.svc p{color:var(--muted);max-width:30em}
+.gets{display:grid;gap:8px;font-size:15.5px;margin-top:4px}
+.gets li{padding-left:16px;position:relative}
+.gets li::before{content:"";position:absolute;left:0;top:.72em;width:7px;height:1px;background:var(--ink)}
+.fig{display:grid;gap:10px;min-width:0}
+.fig figcaption{font-size:12.5px;color:var(--muted);letter-spacing:.06em;text-align:right}
+.panel{background:#08182E;color:#FFFFFF;border-radius:16px;padding:28px 28px 24px;display:grid;gap:20px;box-shadow:0 24px 50px -30px rgba(8,24,46,.55)}
+.panel svg{display:block;width:100%;height:auto;overflow:visible}
+.panel text{font:400 15px Outfit,system-ui,sans-serif;fill:#FFFFFF}
+.panel text.dim{fill:#B9C1CF;font-size:13px}
+.panel .ln{fill:none;stroke:#FFFFFF;stroke-width:1.4;stroke-linecap:round}
+.panel .lnf{fill:none;stroke:rgba(255,255,255,.22);stroke-width:1.2}
+.panel .lnb{fill:none;stroke:#C9A16C;stroke-width:2;stroke-linecap:round}
+.panel .flow{fill:none;stroke:#C9A16C;stroke-width:2.4;stroke-linecap:round;stroke-dasharray:2 12}
+.panel .br{fill:#C9A16C}
+.panel .wh{fill:#FFFFFF}
+.pk{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;font-size:13.5px;color:#B9C1CF}
+.pk b{display:block;font-size:30px;line-height:1.1;font-weight:500;color:#FFFFFF;font-variant-numeric:tabular-nums}
+.bars{display:grid;grid-template-columns:repeat(12,1fr);gap:8px;height:150px;align-items:end;border-bottom:1px solid rgba(255,255,255,.3)}
+.bars i{display:block;height:var(--h);background:#FFFFFF;border-radius:2px 2px 0 0;transform-origin:bottom}
+.bars i:last-child{background:#C9A16C}
+.months{display:grid;grid-template-columns:repeat(12,1fr);gap:8px;font-size:11.5px;color:#B9C1CF;text-align:center;margin-top:6px}
+/* panel animations: start states only when scripted, play on entering the view */
+.js .panel .draw{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.1s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+.js .panel.play .draw{stroke-dashoffset:0}
+.js .panel .flow{opacity:0;transition:opacity .5s ease}
+.js .panel.play .flow{opacity:1;transition-delay:1.2s;animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-14}}
+.js .panel .grow{transform:scaleX(0);transform-origin:left;transform-box:fill-box;transition:transform .7s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+.js .panel.play .grow{transform:none}
+.js .panel .pop{transform:scale(0);transform-origin:center;transform-box:fill-box;transition:transform .5s cubic-bezier(.3,1.4,.5,1) var(--d,0s)}
+.js .panel.play .pop{transform:none}
+.js .panel .bars i{transform:scaleY(0);transition:transform .9s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+.js .panel.play .bars i{transform:scaleY(1)}
+.js .panel .head{opacity:0}
+.js .panel.play .head{animation:head 2.6s cubic-bezier(.4,0,.2,1) .3s both}
+@keyframes head{0%{transform:translateX(0);opacity:1}92%{opacity:1}100%{transform:translateX(248px);opacity:0}}
+
+/* how we work */
+.steps{display:grid;gap:0}
+.steps li{display:grid;grid-template-columns:56px 1fr;gap:8px 12px;padding:26px 0;border-top:1px solid var(--line);transition:var(--theme)}
+.steps li:last-child{border-bottom:1px solid var(--line)}
+.steps .m{font-size:26px;line-height:1.1;font-weight:500}
+.steps .m.gr{font-size:32px}
+.steps p{grid-column:2;color:var(--muted)}
+
+/* name and symbol: six equal tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:48px 40px}
+.tile{display:grid;grid-template-rows:132px auto auto;gap:14px;align-content:start;border-top:1px solid var(--line);padding-top:28px}
+.tile-img{width:132px;height:132px;display:grid;place-items:center}
+.tile-img svg{width:132px;height:132px;display:block}
+.tile-img img{width:auto;height:132px}
+.tile-img .f{fill:var(--ink);opacity:.2}
+.tile-img .b{fill:var(--ink)}
+.tile-img .g{fill:var(--accent)}
+.tile-word{font-family:"GFS Neohellenic",serif;font-size:46px;line-height:1;color:var(--ink)}
+.tile h3{font-size:19px}
+.tile p{font-size:15.5px;color:var(--muted);max-width:19em;min-height:6.4em}
+.origin{margin-top:44px;font-size:15px;color:var(--muted);max-width:44em}
+
+/* who we are */
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:40px 36px}
+.person{border-top:1px solid var(--ink);padding-top:22px;display:grid;gap:10px;align-content:start;transition:var(--theme)}
+.person .role{font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.person p{color:var(--muted)}
+.person dl{display:grid;grid-template-columns:84px 1fr;gap:6px 12px;font-size:15px;margin:6px 0 0}
+.person dt{color:var(--muted)}
+.why{margin-top:64px}
+.why h3{margin-bottom:8px}
+.why li{padding:18px 0;border-top:1px solid var(--line);display:grid;gap:4px}
+.why li:last-child{border-bottom:1px solid var(--line)}
+.why strong{font-weight:500}
+.why span{color:var(--muted);font-size:15.5px}
+
+/* questions */
+.faq details{border-top:1px solid var(--line);transition:var(--theme)}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:20px;align-items:center;padding:22px 0;font-size:19px;font-weight:500;min-height:56px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-weight:400;font-size:24px;line-height:1;transition:transform .35s ease,color .3s ease}
+.faq summary:hover::after{color:var(--accent)}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{color:var(--muted);padding:0 40px 24px 0;max-width:36em}
+
+/* contact: where the dial closes */
+#contact{min-height:100vh;padding-top:13vh;padding-bottom:0;display:flex;flex-direction:column;align-items:center;text-align:center}
+.close-logo{width:min(290px,64vw);margin-bottom:44px}
+.js .close-logo{opacity:0;transition:opacity .7s ease}
+.js body.closed .close-logo{opacity:1}
+#contact > .in{display:grid;gap:22px;justify-items:center;max-width:640px}
+#contact .lead{margin:0 auto}
+#contact .mail{font-size:22px;font-weight:500;text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:4px;transition:border-color .3s ease,color .3s ease}
+#contact .mail:hover{border-color:var(--accent)}
+#contact .btns{justify-content:center}
+#contact .where{color:var(--muted);font-size:15.5px;max-width:30em}
+footer{margin-top:auto;width:100%;padding:72px 0 34px;display:flex;flex-wrap:wrap;gap:8px 28px;justify-content:center;font-size:14px;color:var(--muted)}
+footer a{text-underline-offset:4px}
+
+/* the fixed symbol */
+#sym{position:fixed;left:0;top:0;width:100px;height:100px;z-index:1;pointer-events:none;overflow:visible}
+#sym .ringc{fill:var(--ring)}
+#sym .gearc{fill:var(--gear)}
+#sym .faint{opacity:.2}
+body.closed #sym{opacity:0;transition:opacity 0s .75s}
+
+/* stops on the ring (desktop) */
+.stops{position:fixed;inset:0;z-index:3;pointer-events:none}
+.stops a{position:absolute;transform:translateY(-50%);pointer-events:auto;display:flex;align-items:center;gap:10px;padding:8px 0 8px 10px;
+  font-size:13.5px;font-weight:400;text-decoration:none;color:var(--muted);white-space:nowrap;transition:color .3s ease}
+.stops a::after{content:"";width:7px;height:7px;border-radius:50%;border:1px solid currentColor;transition:background-color .3s ease,border-color .3s ease,transform .3s ease}
+.stops a:hover{color:var(--ink)}
+.stops a.past{color:var(--ink)}
+.stops a.past::after{background:currentColor}
+.stops a.on{color:var(--ink);font-weight:500}
+.stops a.on::after{background:var(--accent);border-color:var(--accent);transform:scale(1.5)}
+
+/* dock and navigator (phone; navigator also serves tablets) */
+.dock{display:none}
+.nav{position:fixed;inset:0;z-index:60;background:#FAF6EF;color:#08182E;display:grid;grid-template-rows:auto 1fr auto;
+  padding:14px 20px calc(22px + env(safe-area-inset-bottom));opacity:0;visibility:hidden;transform:translateY(16px);
+  transition:opacity .35s ease,transform .35s ease,visibility 0s .35s}
+.nav.open{opacity:1;visibility:visible;transform:none;transition:opacity .35s ease,transform .35s ease}
+.nav-top{display:flex;justify-content:space-between;align-items:center;min-height:48px}
+.nav-top .label{color:#556074}
+.nav-x{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid #08182E;background:transparent;color:#08182E;font:500 15px/1 Outfit,system-ui,sans-serif;cursor:pointer;transition:background-color .3s ease,color .3s ease,border-color .3s ease}
+.nav-x:hover,.nav-x:focus-visible{background:transparent;border-color:#A88250;color:#A88250}
+.dial-wrap{display:grid;place-items:center;min-height:0}
+.dial{position:relative;width:min(84vw,46vh,440px);aspect-ratio:1;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.dial:active{cursor:grabbing}
+.dial svg{position:absolute;inset:13%;width:74%;height:74%;pointer-events:none}
+.dial svg .ringc{fill:#08182E}
+.dial svg .gearc{fill:#A88250}
+#navGear{transform-box:fill-box;transform-origin:center}
+.dial-ring{position:absolute;inset:0;border-radius:50%}
+.nstop{position:absolute;width:48px;height:48px;margin:-24px 0 0 -24px;border:0;background:none;padding:0;display:grid;place-items:center;cursor:pointer;font:500 14px/1 Outfit,system-ui,sans-serif;color:#08182E}
+.nstop span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1px solid rgba(8,24,46,.4);background:#FAF6EF;transition:background-color .3s ease,color .3s ease,border-color .3s ease,width .3s ease,height .3s ease}
+.nstop.sel span{width:40px;height:40px;background:#08182E;border-color:#08182E;color:#fff}
+.nav-info{text-align:center;display:grid;gap:8px;justify-items:center}
+.nav-info .count{font-size:13px;letter-spacing:.14em;color:#556074;font-weight:500}
+.nav-info .t{font-size:26px;font-weight:500;line-height:1.15}
+.nav-info .d{color:#556074;min-height:3.2em;max-width:22em}
+.nav-row{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;width:100%;max-width:380px;margin-top:6px}
+.nav-row button{min-height:48px;border-radius:999px;font:500 15.5px/1 Outfit,system-ui,sans-serif;cursor:pointer;transition:background-color .3s ease,color .3s ease,border-color .3s ease}
+.nav-row .step{border:1px solid rgba(8,24,46,.3);background:transparent;color:#08182E}
+.nav-row .step:hover,.nav-row .step:focus-visible{border-color:#A88250;color:#A88250}
+.nav-row .go{border:1px solid #08182E;background:#08182E;color:#fff;padding:0 34px}
+.nav-row .go:hover,.nav-row .go:focus-visible{background:#A88250;border-color:#A88250}
+.nav .tip{font-size:13.5px;color:#556074;margin-top:4px}
+html.locked{overflow:hidden}
+
+/* tablets and small laptops */
+@media (max-width:1100px){
+  .stops{display:none}
+  .menu-btn{display:inline-flex}
+  .top .contact-btn{display:none}
+}
+
+/* phones: a purpose-made layout around the thumb dial */
+@media (max-width:760px){
+  body{font-size:16.5px;padding-bottom:calc(104px + env(safe-area-inset-bottom))}
+  h1{font-size:36px} h2{font-size:28px} h3{font-size:20px}
+  .lead{font-size:17.5px}
+  .top{position:sticky;top:0;max-width:none;padding:8px 16px;min-height:60px;background:var(--bg);border-bottom:1px solid var(--line);transition:var(--theme)}
+  .logo img{width:146px}
+  .top .contact-btn{display:none}
+  section{padding:72px 20px;scroll-margin-top:60px}
+  .in-col{max-width:none}
+  .sec-h{margin-bottom:36px}
+  #home{min-height:calc(100svh - 60px - 104px);align-items:flex-end;padding-top:32px;padding-bottom:36px}
+  #home .in-col{gap:20px;width:100%}
+  #home .btns{display:grid}
+  .hint{display:block;font-size:14px;color:var(--muted);text-align:center;padding-top:6px}
+  .btn{min-height:52px;width:100%}
+  .top .btn{width:auto;min-height:44px}
+  main > section{min-height:0}
+  .svc{padding:44px 0;gap:26px}
+  .panel{padding:20px 18px 18px}
+  .bars{height:120px;gap:5px}
+  .months{gap:5px}
+  .tiles{gap:34px}
+  .tile p{min-height:0;max-width:none}
+  .faq summary{font-size:17.5px}
+  .faq details p{padding-right:0}
+  #contact{min-height:calc(100svh - 60px);padding-top:56px}
+  #contact .btns{display:grid;width:100%}
+  #contact .mail{font-size:19px}
+  footer{flex-direction:column;align-items:center;padding:56px 0 8px}
+  #sym{z-index:41}
+  .dock{display:block;position:fixed;z-index:40;left:50%;bottom:0;width:min(264px,calc(100vw - 40px));height:calc(90px + env(safe-area-inset-bottom));
+    transform:translateX(-50%);overflow:hidden;border:0;padding:0;background:none;cursor:pointer;touch-action:none;-webkit-tap-highlight-color:transparent;color:var(--ink)}
+  .dock .disc{position:absolute;left:0;top:0;width:100%;aspect-ratio:1;border-radius:50%;background:var(--dockbg);border:1px solid var(--line);transition:var(--theme)}
+  .dock .name{position:absolute;left:0;right:0;top:43px;text-align:center;font:500 13px/16px Outfit,system-ui,sans-serif;letter-spacing:.04em;color:var(--ink);transition:var(--theme)}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .js .rv{opacity:1;transform:none;transition:none}
+  .js .panel .draw,.js .panel .grow,.js .panel .pop,.js .panel .bars i{transition:none}
+  .js .panel.play .flow,.js .panel.play .head{animation:none}
+  .nav,.nav.open{transition:none}
+}
+</style>
+</head>
+<body data-ground="ivory">
+
+<!-- Official symbol geometry (from assets/brand/noima-symbol-bronze-navy-transparent.svg, unchanged), split by part -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <path id="p-ring" fill-rule="evenodd" d="M10.97 36.10L11.48 34.73L12.66 32.04L14.03 29.43L14.78 28.17L16.42 25.73L18.22 23.41L20.19 21.23L21.23 20.19L23.41 18.22L25.73 16.42L28.17 14.78L30.72 13.32L32.04 12.66L34.73 11.48L37.50 10.50L40.63 9.58L41.00 9.22L41.13 8.82L41.08 8.31L40.86 7.95L40.43 7.67L39.91 7.62L36.87 8.46L33.92 9.51L31.13 10.73L29.75 11.43L27.06 12.96L24.50 14.68L22.06 16.57L19.76 18.64L17.61 20.86L15.61 23.26L13.82 25.73L12.98 27.03L11.43 29.75L10.10 32.50L9.49 33.96L8.47 36.83L8.03 38.32L7.61 40.12L7.76 40.62L8.12 40.99L8.51 41.13L8.93 41.11L9.30 40.94L9.58 40.63ZM63.90 10.97L66.63 12.05L67.96 12.66L70.57 14.03L71.83 14.78L73.06 15.58L75.44 17.30L77.70 19.19L79.81 21.23L81.78 23.41L83.58 25.73L85.22 28.17L86.68 30.72L87.34 32.04L88.52 34.73L89.50 37.50L90.42 40.63L90.70 40.94L91.18 41.13L91.69 41.08L92.05 40.86L92.33 40.43L92.38 39.91L91.54 36.87L90.49 33.92L89.27 31.13L88.57 29.75L87.04 27.06L85.32 24.50L83.43 22.06L81.36 19.76L79.11 17.59L77.94 16.57L75.53 14.70L72.97 12.98L70.25 11.43L67.50 10.10L66.04 9.49L64.59 8.95L61.68 8.03L59.88 7.61L59.38 7.76L59.01 8.12L58.87 8.51L58.89 8.93L59.06 9.30L59.37 9.58ZM36.10 89.03L33.37 87.95L32.04 87.34L29.43 85.97L28.17 85.22L26.94 84.42L24.56 82.70L22.30 80.81L20.19 78.77L18.22 76.59L16.42 74.27L14.78 71.83L13.32 69.28L12.05 66.63L11.48 65.27L10.50 62.50L9.58 59.37L9.22 59.00L8.82 58.87L8.31 58.92L7.95 59.14L7.67 59.57L7.62 60.09L8.46 63.13L9.51 66.08L10.10 67.50L11.43 70.25L12.96 72.94L14.68 75.50L16.57 77.94L18.64 80.24L20.89 82.41L22.06 83.43L24.47 85.30L27.03 87.02L29.75 88.57L32.50 89.90L33.96 90.51L35.41 91.05L38.32 91.97L40.12 92.39L40.62 92.24L40.99 91.88L41.13 91.49L41.11 91.07L40.94 90.70L40.63 90.42ZM89.03 63.90L88.52 65.27L87.34 67.96L85.97 70.57L84.42 73.06L82.70 75.44L81.78 76.59L79.81 78.77L78.77 79.81L76.59 81.78L74.27 83.58L71.83 85.22L69.28 86.68L66.63 87.95L65.27 88.52L62.50 89.50L59.37 90.42L59.06 90.70L58.87 91.18L58.89 91.59L59.14 92.05L59.57 92.33L60.09 92.38L63.13 91.54L66.08 90.49L68.87 89.27L70.25 88.57L72.94 87.04L75.50 85.32L77.94 83.43L80.24 81.36L82.41 79.11L83.43 77.94L85.30 75.53L87.02 72.97L88.57 70.25L89.90 67.50L90.51 66.04L91.05 64.59L91.97 61.68L92.39 59.88L92.24 59.38L91.88 59.01L91.49 58.87L91.07 58.89L90.70 59.06L90.42 59.37Z"/>
+    <path id="p-sun" fill-rule="evenodd" d="M90.38 47.31L91.23 46.82L89.48 44.76ZM89.81 47.88L87.26 46.98L89.32 48.73ZM89.11 49.51L86.45 50.00L89.11 50.49ZM95.52 49.89L95.44 49.30L95.25 48.74L94.95 48.23L94.56 47.78L94.09 47.43L93.55 47.17L92.98 47.01L92.39 46.98L91.80 47.06L91.24 47.25L90.73 47.55L90.28 47.94L89.93 48.41L89.67 48.95L89.51 49.52L89.48 50.11L89.56 50.70L89.75 51.26L90.05 51.77L90.44 52.22L90.91 52.57L91.45 52.83L92.02 52.99L92.61 53.02L93.20 52.94L93.76 52.75L94.27 52.45L94.72 52.06L95.07 51.59L95.33 51.05L95.49 50.48ZM89.32 51.27L87.26 53.02L89.81 52.12ZM90.38 52.69L89.48 55.24L91.23 53.18ZM92.99 53.39L92.01 53.39L92.50 56.05ZM92.99 46.61L92.50 43.95L92.01 46.61ZM94.62 47.31L95.52 44.76L93.77 46.82ZM95.68 48.73L97.74 46.98L95.19 47.88ZM95.89 50.49L98.55 50.00L95.89 49.51ZM95.19 52.12L97.74 53.02L95.68 51.27ZM93.77 53.18L95.52 55.24L94.62 52.69Z"/>
+    <path id="p-moon" fill-rule="evenodd" d="M9.43 44.98L8.42 44.70L7.37 44.63L6.32 44.75L5.32 45.09L4.40 45.60L3.61 46.29L2.96 47.12L2.48 48.07L2.20 49.08L2.13 50.13L2.25 51.18L2.59 52.18L3.10 53.10L3.79 53.89L4.62 54.54L5.57 55.02L6.97 55.35L8.42 55.30L9.80 54.86L10.97 54.11L10.02 54.19L9.12 54.09L8.26 53.82L7.46 53.38L6.77 52.80L6.21 52.09L5.77 51.23L5.53 50.36L5.46 49.46L5.58 48.50L5.88 47.64L6.33 46.86L6.98 46.14L7.70 45.60L8.52 45.22Z"/>
+    <path id="p-dots" fill-rule="evenodd" d="M82.65 19.88L82.43 18.89L81.84 18.06L80.99 17.52L79.99 17.35L79.00 17.57L78.17 18.16L77.63 19.01L77.45 20.01L77.68 21.00L78.26 21.83L79.12 22.37L80.12 22.55L81.11 22.32L81.94 21.74L82.48 20.88ZM22.55 19.88L22.32 18.89L21.74 18.06L20.88 17.52L19.88 17.35L18.89 17.57L18.06 18.16L17.52 19.01L17.35 20.01L17.57 21.00L18.16 21.83L19.01 22.37L20.01 22.55L21.00 22.32L21.83 21.74L22.37 20.88ZM22.55 79.99L22.32 79.00L21.74 78.17L20.88 77.63L19.88 77.45L18.89 77.68L18.06 78.26L17.52 79.12L17.35 80.12L17.57 81.11L18.16 81.94L19.01 82.48L20.01 82.65L21.00 82.43L21.83 81.84L22.37 80.99ZM82.65 79.99L82.43 79.00L81.84 78.17L80.99 77.63L79.99 77.45L79.00 77.68L78.17 78.26L77.63 79.12L77.45 80.12L77.68 81.11L78.26 81.94L79.12 82.48L80.12 82.65L81.11 82.43L81.94 81.84L82.48 80.99Z"/>
+    <path id="p-gear" fill-rule="evenodd" d="M36.29 28.74L35.61 29.19L34.09 28.41L33.26 29.05L33.63 30.71L33.01 31.25L31.41 30.67L30.67 31.41L31.25 33.01L30.71 33.63L29.05 33.26L28.41 34.09L29.19 35.61L28.74 36.29L27.04 36.14L26.51 37.05L27.49 38.45L27.13 39.18L25.43 39.25L25.02 40.22L26.18 41.48L25.91 42.26L24.24 42.55L23.96 43.57L25.27 44.66L25.11 45.47L23.48 45.98L23.35 47.02L24.78 47.94L24.73 48.75L23.19 49.47L23.19 50.53L24.73 51.25L24.78 52.06L23.35 52.98L23.48 54.02L25.11 54.53L25.27 55.34L23.96 56.43L24.24 57.45L25.91 57.74L26.18 58.52L25.02 59.78L25.43 60.75L27.13 60.82L27.49 61.55L26.51 62.95L27.04 63.86L28.74 63.71L29.19 64.39L28.41 65.91L29.05 66.74L30.71 66.37L31.25 66.99L30.67 68.59L31.41 69.33L33.01 68.75L33.63 69.29L33.26 70.95L34.09 71.59L35.61 70.81L36.29 71.26L36.14 72.96L37.05 73.49L38.45 72.51L39.18 72.87L39.25 74.57L40.22 74.98L41.48 73.82L42.26 74.09L42.55 75.76L43.57 76.04L44.66 74.73L45.47 74.89L45.98 76.52L47.02 76.65L47.94 75.22L48.75 75.27L49.47 76.81L50.53 76.81L51.25 75.27L52.06 75.22L52.98 76.65L54.02 76.52L54.53 74.89L55.34 74.73L56.43 76.04L57.45 75.76L57.74 74.09L58.52 73.82L59.78 74.98L60.75 74.57L60.82 72.87L61.55 72.51L62.95 73.49L63.86 72.96L63.71 71.26L64.39 70.81L65.91 71.59L66.74 70.95L66.37 69.29L66.99 68.75L68.59 69.33L69.33 68.59L68.75 66.99L69.29 66.37L70.95 66.74L71.59 65.91L70.81 64.39L71.26 63.71L72.96 63.86L73.49 62.95L72.51 61.55L72.87 60.82L74.57 60.75L74.98 59.78L73.82 58.52L74.09 57.74L75.76 57.45L76.04 56.43L74.73 55.34L74.89 54.53L76.52 54.02L76.65 52.98L75.22 52.06L75.27 51.25L76.81 50.53L76.81 49.47L75.27 48.75L75.22 47.94L76.65 47.02L76.52 45.98L74.89 45.47L74.73 44.66L76.04 43.57L75.76 42.55L74.09 42.26L73.82 41.48L74.98 40.22L74.57 39.25L72.87 39.18L72.51 38.45L73.49 37.05L72.96 36.14L71.26 36.29L70.81 35.61L71.59 34.09L70.95 33.26L69.29 33.63L68.75 33.01L69.33 31.41L68.59 30.67L66.99 31.25L66.37 30.71L66.74 29.05L65.91 28.41L64.39 29.19L63.71 28.74L63.86 27.04L62.95 26.51L61.55 27.49L60.82 27.13L60.75 25.43L59.78 25.02L58.52 26.18L57.74 25.91L57.45 24.24L56.43 23.96L55.34 25.27L54.53 25.11L54.02 23.48L52.98 23.35L52.06 24.78L51.25 24.73L50.53 23.19L49.47 23.19L48.75 24.73L47.94 24.78L47.02 23.35L45.98 23.48L45.47 25.11L44.66 25.27L43.57 23.96L42.55 24.24L42.26 25.91L41.48 26.18L40.22 25.02L39.25 25.43L39.18 27.13L38.45 27.49L37.05 26.51L36.14 27.04ZM52.32 55.98L52.59 55.47L53.64 54.77L54.39 54.09L55.47 52.59L55.98 52.32L70.33 52.30L70.70 52.41L70.93 52.58L71.11 52.81L71.22 53.18L70.98 54.70L70.50 56.49L69.96 57.99L69.21 59.66L68.44 61.06L67.43 62.59L66.45 63.85L65.21 65.20L64.04 66.28L62.60 67.42L61.27 68.31L59.67 69.20L58.22 69.87L56.50 70.49L54.96 70.92L53.37 71.23L52.99 71.18L52.65 71.00L52.41 70.70L52.30 70.33ZM53.27 28.77L55.73 29.28L57.25 29.76L58.95 30.45L60.37 31.17L61.94 32.12L63.23 33.05L64.63 34.24L65.93 35.56L66.95 36.78L68.03 38.28L68.96 39.87L69.76 41.53L70.57 43.75L71.09 45.81L71.22 46.82L71.15 47.10L70.93 47.42L70.61 47.63L70.23 47.70L55.98 47.68L55.47 47.41L54.77 46.36L54.09 45.61L52.59 44.53L52.38 44.21L52.30 43.83L52.30 29.67L52.46 29.22L52.81 28.89ZM28.77 46.73L29.21 44.51L29.75 42.76L30.45 41.05L31.17 39.63L32.13 38.05L33.21 36.57L34.25 35.36L35.56 34.07L36.98 32.89L38.49 31.84L39.87 31.04L41.53 30.24L43.75 29.43L45.81 28.91L46.82 28.78L47.10 28.85L47.42 29.07L47.63 29.39L47.70 29.77L47.68 44.02L47.41 44.53L46.36 45.23L45.61 45.91L44.53 47.41L44.21 47.62L43.83 47.70L29.67 47.70L29.22 47.54L28.89 47.19ZM44.02 52.32L44.53 52.59L45.23 53.64L45.91 54.39L47.41 55.47L47.68 55.98L47.70 70.33L47.63 70.61L47.42 70.93L47.10 71.15L46.82 71.22L45.30 70.98L43.51 70.50L42.01 69.96L40.34 69.21L38.94 68.44L37.41 67.43L36.15 66.45L34.80 65.21L33.72 64.04L32.58 62.60L31.69 61.27L30.80 59.67L30.13 58.22L29.51 56.50L29.08 54.96L28.77 53.37L28.82 52.99L29.00 52.65L29.30 52.41L29.67 52.30ZM53.40 50.04L53.33 50.70L53.12 51.34L52.80 51.92L52.37 52.43L51.85 52.85L51.26 53.16L50.62 53.34L49.96 53.40L49.30 53.33L48.66 53.12L48.08 52.80L47.57 52.37L47.15 51.85L46.84 51.26L46.66 50.62L46.60 49.96L46.67 49.30L46.88 48.66L47.20 48.08L47.63 47.57L48.15 47.15L48.74 46.84L49.38 46.66L50.04 46.60L50.70 46.67L51.34 46.88L51.92 47.20L52.43 47.63L52.85 48.15L53.16 48.74L53.34 49.38ZM52.60 49.97L52.39 48.98L51.82 48.14L50.97 47.59L49.97 47.40L48.98 47.61L48.14 48.18L47.59 49.03L47.40 50.03L47.61 51.02L48.18 51.86L49.03 52.41L50.03 52.60L51.02 52.39L51.86 51.82L52.41 50.97ZM51.40 50.02L51.29 50.55L50.98 51.00L50.52 51.30L49.98 51.40L49.45 51.29L49.00 50.98L48.70 50.52L48.60 49.98L48.71 49.45L49.02 49.00L49.48 48.70L50.02 48.60L50.55 48.71L51.00 49.02L51.30 49.48Z"/>
+    <path id="p-letters" fill-rule="evenodd" d="M51.58 4.80L51.11 4.45L50.58 4.21L50.00 4.06L48.87 4.04L47.95 4.30L47.54 4.52L46.82 5.15L46.33 5.88L46.03 6.69L45.93 7.55L45.96 8.04L46.15 8.95L46.32 9.36L46.80 10.09L47.14 10.42L47.52 10.69L48.39 11.06L48.87 11.15L49.68 11.16L50.27 11.06L51.11 10.71L51.61 10.35L52.00 9.95L52.62 10.67L53.78 11.38L54.07 9.78L53.55 9.42L53.07 8.83L52.82 8.05L52.79 7.57L52.91 6.79L53.06 6.42L53.55 5.70L54.00 5.24L53.84 3.62L52.64 4.39L52.33 4.71L51.99 5.24ZM51.26 8.15L50.92 8.85L50.34 9.37L49.64 9.61L48.75 9.53L48.17 9.16L47.72 8.42L47.58 7.56L47.72 6.80L48.13 6.16L48.72 5.72L49.35 5.58L50.07 5.73L50.71 6.18L51.17 6.84L51.32 7.57ZM50.02 94.84L50.38 95.32L50.86 95.73L51.39 96.02L51.96 96.15L53.09 96.01L53.81 95.67L54.11 95.43L54.75 94.55L55.03 93.43L54.97 92.07L54.50 90.86L53.96 90.15L53.34 89.60L52.63 89.19L51.58 88.85L51.04 90.26L51.71 90.41L52.27 90.66L52.84 91.13L53.18 91.60L53.44 92.32L53.51 92.96L53.43 93.68L53.18 94.21L52.79 94.56L52.42 94.66L51.99 94.66L51.62 94.52L51.18 94.01L50.97 93.44L50.85 92.72L50.84 91.51L49.17 91.51L49.12 93.10L48.83 94.01L48.39 94.52L48.03 94.66L47.60 94.66L47.08 94.47L46.63 93.88L46.47 92.96L46.62 92.02L46.87 91.49L47.48 90.83L48.00 90.53L48.97 90.24L48.44 88.85L47.77 89.04L47.02 89.38L46.35 89.86L45.76 90.49L45.16 91.65L44.98 92.59L44.97 93.46L45.12 94.23L45.41 94.90L45.89 95.48L46.55 95.90L46.93 96.04L47.78 96.15L48.35 96.08L48.89 95.87L49.41 95.52Z"/>
+  </defs>
+</svg>
+
+<!-- The one symbol that turns with the page and closes into the logo at Contact -->
+<svg id="sym" viewBox="-4 -4 108 108" aria-hidden="true" focusable="false">
+  <defs>
+    <mask id="m-ring" maskUnits="userSpaceOnUse" x="-4" y="-4" width="108" height="108">
+      <path id="mA1" d="M50 7.5A42.5 42.5 0 0 0 50 92.5" pathLength="180" fill="none" stroke="#fff" stroke-width="9" stroke-dasharray="180 180" stroke-dashoffset="180"/>
+      <path id="mA2" d="M50 7.5A42.5 42.5 0 0 1 50 92.5" pathLength="180" fill="none" stroke="#fff" stroke-width="9" stroke-dasharray="180 180" stroke-dashoffset="180"/>
+      <path id="mB" d="M13.19 28.75A42.5 42.5 0 0 1 86.81 28.75" pathLength="100" fill="none" stroke="#fff" stroke-width="9" stroke-dasharray="100 100" stroke-dashoffset="100"/>
+    </mask>
+  </defs>
+  <g class="ringc faint"><use href="#p-ring"/><use href="#p-dots"/></g>
+  <g class="ringc" mask="url(#m-ring)"><use href="#p-ring"/><use href="#p-dots"/></g>
+  <g class="ringc"><use href="#p-letters"/><use href="#p-moon"/><use href="#p-sun"/></g>
+  <g id="gear" class="gearc"><use href="#p-gear"/></g>
+</svg>
+
+<nav class="stops" id="stops" aria-label="Sections">
+  <a href="#home">Home</a>
+  <a href="#what">What we do</a>
+  <a href="#how">How we work</a>
+  <a href="#name">Name and symbol</a>
+  <a href="#who">Who we are</a>
+  <a href="#questions">Questions</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<header class="top">
+  <a class="logo" href="#home" aria-label="NÓIMA, home">
+    <picture class="lg-l" style="grid-area:1/1">
+      <source media="(max-width:760px)" srcset="../assets/brand/noima-horizontal-no-tagline-bronze-navy-transparent.svg">
+      <img class="lg-l" src="../assets/brand/noima-horizontal-no-tagline-bronze-navy-transparent.svg" alt="NÓIMA" width="196" height="80">
+    </picture>
+    <picture class="lg-d" style="grid-area:1/1" aria-hidden="true">
+      <source media="(max-width:760px)" srcset="../assets/brand/noima-horizontal-no-tagline-bronze-white-transparent.svg">
+      <img class="lg-d" src="../assets/brand/noima-horizontal-no-tagline-bronze-white-transparent.svg" alt="" width="196" height="80">
+    </picture>
+  </a>
+  <div class="right">
+    <button class="btn ghost menu-btn" type="button" id="menuBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="nav">Menu</button>
+    <a class="btn contact-btn" href="#contact">Get in touch</a>
+  </div>
+</header>
+
+<main>
+  <section id="home" data-ground="ivory" data-name="Home">
+    <div class="in-col">
+      <p class="def rv"><span class="gr">νόημα</span> Nóima /ˈno.i.ma/ · Greek for “sense”, “meaning”</p>
+      <h1 class="rv">Make <span class="em">sense</span> of your data.</h1>
+      <p class="lead rv">More than 2,000 years ago, the Antikythera mechanism found the meaning in the movements of the sky. We find the meaning in your data.</p>
+      <div class="btns rv">
+        <a class="btn" href="#contact">Start a conversation</a>
+        <a class="btn ghost" href="#name">Our name and symbol <span class="ar" aria-hidden="true">→</span></a>
+      </div>
+      <p class="hint rv">The dial below is the menu. Tap it, then turn it.</p>
+    </div>
+  </section>
+
+  <section id="what" data-ground="white" data-name="What we do">
+    <div class="in-wide">
+      <div class="sec-h in-col">
+        <p class="label rv">What we do</p>
+        <h2 class="rv">Data engineering, analytics and <span class="em">automation.</span></h2>
+        <p class="lead rv">Start with one and add the next when you need it. You can hire us for a single dashboard or for all three.</p>
+      </div>
+
+      <article class="svc">
+        <div class="svc-copy">
+          <p class="n rv">01 · Data engineering</p>
+          <h3 class="rv">All your data in one place.</h3>
+          <p class="rv">We connect your systems, clean the data and keep it in one warehouse that every report reads.</p>
+          <ul class="gets rv">
+            <li>Pipelines from each of your systems</li>
+            <li>Data cleaned and checked on arrival</li>
+            <li>One warehouse for every report</li>
+          </ul>
+        </div>
+        <figure class="fig rv">
+          <div class="panel" role="img" aria-label="Illustration: four sources flow through pipelines into one warehouse">
+            <svg viewBox="0 0 440 244" aria-hidden="true" focusable="false">
+              <g class="wh">
+                <circle class="pop" style="--d:.0s" cx="20" cy="30" r="6"/><circle class="pop" style="--d:.1s" cx="20" cy="92" r="6"/>
+                <circle class="pop" style="--d:.2s" cx="20" cy="154" r="6"/><circle class="pop" style="--d:.3s" cx="20" cy="216" r="6"/>
+              </g>
+              <text x="38" y="35">CRM</text><text x="38" y="97">Online shop</text><text x="38" y="159">Accounting</text><text x="38" y="221">Spreadsheets</text>
+              <path class="ln draw" style="--d:.15s" pathLength="1" d="M150 30 C236 30 222 108 306 112"/>
+              <path class="ln draw" style="--d:.3s" pathLength="1" d="M150 92 C226 92 232 118 306 118"/>
+              <path class="ln draw" style="--d:.45s" pathLength="1" d="M150 154 C226 154 232 128 306 128"/>
+              <path class="ln draw" style="--d:.6s" pathLength="1" d="M150 216 C236 216 222 138 306 134"/>
+              <path class="flow" d="M150 30 C236 30 222 108 306 112"/>
+              <path class="flow" d="M150 92 C226 92 232 118 306 118"/>
+              <path class="flow" d="M150 154 C226 154 232 128 306 128"/>
+              <path class="flow" d="M150 216 C236 216 222 138 306 134"/>
+              <rect class="ln" x="312" y="62" width="112" height="122" rx="10"/>
+              <g class="br">
+                <rect class="grow" style="--d:1.1s" x="328" y="84" width="80" height="12" rx="2"/>
+                <rect class="grow" style="--d:1.3s" x="328" y="106" width="80" height="12" rx="2"/>
+                <rect class="grow" style="--d:1.5s" x="328" y="128" width="80" height="12" rx="2"/>
+                <rect class="grow" style="--d:1.7s" x="328" y="150" width="80" height="12" rx="2"/>
+              </g>
+              <text x="368" y="212" text-anchor="middle">One warehouse</text>
+            </svg>
+            <div class="pk"><div><b><span data-count="4">4</span> of 4</b>sources loaded</div><span>Refreshed 06:00</span></div>
+          </div>
+          <figcaption>Illustrative</figcaption>
+        </figure>
+      </article>
+
+      <article class="svc">
+        <div class="svc-copy">
+          <p class="n rv">02 · Analytics</p>
+          <h3 class="rv">Clear dashboards and analysis.</h3>
+          <p class="rv">We turn your data into dashboards and analysis that show how the business is doing and why.</p>
+          <ul class="gets rv">
+            <li>Dashboards for each team</li>
+            <li>KPIs with one agreed definition</li>
+            <li>Analysis on the questions you ask</li>
+          </ul>
+        </div>
+        <figure class="fig rv">
+          <div class="panel" role="img" aria-label="Illustration: a sales dashboard with two figures and a bar chart of twelve months">
+            <div class="pk">
+              <div><b>€<span data-count="248300">248,300</span></b>Revenue · this month</div>
+              <div style="text-align:right"><b><span data-count="1964">1,964</span></b>Orders · this month</div>
+            </div>
+            <div>
+              <div class="bars" aria-hidden="true">
+                <i style="--h:42%;--d:.05s"></i><i style="--h:48%;--d:.1s"></i><i style="--h:45%;--d:.15s"></i><i style="--h:56%;--d:.2s"></i><i style="--h:61%;--d:.25s"></i><i style="--h:58%;--d:.3s"></i>
+                <i style="--h:66%;--d:.35s"></i><i style="--h:72%;--d:.4s"></i><i style="--h:69%;--d:.45s"></i><i style="--h:80%;--d:.5s"></i><i style="--h:88%;--d:.55s"></i><i style="--h:100%;--d:.6s"></i>
+              </div>
+              <div class="months" aria-hidden="true"><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
+            </div>
+          </div>
+          <figcaption>Illustrative · sample figures</figcaption>
+        </figure>
+      </article>
+
+      <article class="svc">
+        <div class="svc-copy">
+          <p class="n rv">03 · Automation</p>
+          <h3 class="rv">Repeated work, automated.</h3>
+          <p class="rv">We automate the tasks you repeat: generating reports, sending invoices and emails, running the same analysis each week.</p>
+          <ul class="gets rv">
+            <li>Reports generated and sent for you</li>
+            <li>Invoices sent on schedule</li>
+            <li>Alerts when a number moves</li>
+          </ul>
+        </div>
+        <figure class="fig rv">
+          <div class="panel" role="img" aria-label="Illustration: a week where three scheduled jobs run on their own">
+            <svg viewBox="0 0 440 222" aria-hidden="true" focusable="false">
+              <g text-anchor="middle"><text class="dim" x="150" y="14">Mon</text><text class="dim" x="212" y="14">Tue</text><text class="dim" x="274" y="14">Wed</text><text class="dim" x="336" y="14">Thu</text><text class="dim" x="398" y="14">Fri</text></g>
+              <path class="lnf" d="M150 28V212M212 28V212M274 28V212M336 28V212M398 28V212" stroke-dasharray="2 6"/>
+              <text x="0" y="71">Weekly report</text><text x="0" y="129">Invoices</text><text x="0" y="187">Analysis</text>
+              <path class="lnf" d="M150 66H398M150 124H398M150 182H398"/>
+              <path class="lnb draw" style="--d:.5s" pathLength="1" d="M150 124H274"/>
+              <path class="lnb draw" style="--d:.7s" pathLength="1" d="M150 182H398"/>
+              <path class="head" d="M150 28V212" fill="none" stroke="#FFFFFF" stroke-width="1.4"/>
+              <g class="pop" style="--d:.45s"><circle class="br" cx="150" cy="66" r="13"/><path d="M144 66l4.5 4.5L157 62" fill="none" stroke="#08182E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g>
+              <g class="pop" style="--d:1.5s"><circle class="br" cx="274" cy="124" r="13"/><path d="M268 124l4.5 4.5L281 120" fill="none" stroke="#08182E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g>
+              <g class="pop" style="--d:2.5s"><circle class="br" cx="398" cy="182" r="13"/><path d="M392 182l4.5 4.5L405 178" fill="none" stroke="#08182E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g>
+            </svg>
+            <div class="pk"><div><b><span data-count="3">3</span> of 3</b>jobs ran on schedule</div><span>Done by hand: 0</span></div>
+          </div>
+          <figcaption>Illustrative</figcaption>
+        </figure>
+      </article>
+    </div>
+  </section>
+
+  <section id="how" data-ground="white" data-name="How we work">
+    <div class="in-col">
+      <div class="sec-h">
+        <p class="label rv">How we work</p>
+        <h2 class="rv">How a project runs, from <span class="gr">α</span> to <span class="gr">ω</span>.</h2>
+        <p class="lead rv">We work in short rounds and show you something working after each one. Everything we build stays yours.</p>
+      </div>
+      <ol class="steps">
+        <li class="rv"><span class="m gr">α</span><h3>Listen</h3><p>You walk us through the reports you rely on and the questions they can’t answer.</p></li>
+        <li class="rv"><span class="m">2</span><h3>Map</h3><p>We go through your systems and spreadsheets and tell you what the data can support today.</p></li>
+        <li class="rv"><span class="m">3</span><h3>Build</h3><p>We build in short rounds, each ending with something you can open and check.</p></li>
+        <li class="rv"><span class="m gr">ω</span><h3>Automate</h3><p>Whatever still gets done by hand each week goes on a schedule, with an alert when it fails.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="name" data-ground="navy" data-name="Name and symbol">
+    <div class="in-wide">
+      <div class="sec-h in-col">
+        <p class="label rv">Our name and symbol</p>
+        <h2 class="rv">A Greek word and the first analogue computer.</h2>
+      </div>
+      <div class="tiles">
+        <div class="tile rv">
+          <div class="tile-img"><span class="tile-word" lang="el">νόημα</span></div>
+          <h3>The name</h3>
+          <p>Nóima is the Greek word for sense or meaning. When something makes sense, Greeks say it has <span class="gr" lang="el">νόημα</span>.</p>
+        </div>
+        <div class="tile rv">
+          <div class="tile-img"><svg viewBox="-4 -4 108 108" aria-hidden="true" focusable="false"><g class="f"><use href="#p-ring"/><use href="#p-dots"/><use href="#p-letters"/><use href="#p-moon"/><use href="#p-sun"/></g><g class="g"><use href="#p-gear"/></g></svg></div>
+          <h3>The gear</h3>
+          <p>The main wheel of the Antikythera mechanism, the first analogue computer. For us it stands for the machinery we build.</p>
+        </div>
+        <div class="tile rv">
+          <div class="tile-img"><svg viewBox="-4 -4 108 108" aria-hidden="true" focusable="false"><g class="f"><use href="#p-letters"/><use href="#p-moon"/><use href="#p-sun"/><use href="#p-gear"/></g><g class="b"><use href="#p-ring"/><use href="#p-dots"/></g></svg></div>
+          <h3>The dial</h3>
+          <p>The open ring around the gear, marked by four dots. On the mechanism, this is where the answer was read.</p>
+        </div>
+        <div class="tile rv">
+          <div class="tile-img"><svg viewBox="-4 -4 108 108" aria-hidden="true" focusable="false"><g class="f"><use href="#p-ring"/><use href="#p-dots"/><use href="#p-moon"/><use href="#p-sun"/><use href="#p-gear"/></g><g class="b"><use href="#p-letters"/></g></svg></div>
+          <h3><span class="gr">α</span> to <span class="gr">ω</span></h3>
+          <p>Alpha sits at the top and omega at the bottom. Every project runs from raw data to meaning, start to finish.</p>
+        </div>
+        <div class="tile rv">
+          <div class="tile-img"><svg viewBox="-4 -4 108 108" aria-hidden="true" focusable="false"><g class="f"><use href="#p-ring"/><use href="#p-dots"/><use href="#p-letters"/><use href="#p-gear"/></g><g class="b"><use href="#p-moon"/><use href="#p-sun"/></g></svg></div>
+          <h3>Moon and Sun</h3>
+          <p>The Moon on the left and the Sun on the right are what the mechanism tracked. For us: your questions.</p>
+        </div>
+        <div class="tile rv">
+          <div class="tile-img"><img src="../assets/brand/noima-stacked-bronze-white-transparent.svg" alt="NÓIMA · Data · Analytics · Automation" width="124" height="132" loading="lazy"></div>
+          <h3>Together</h3>
+          <p>The mechanism that read the sky and the Greek word for meaning. Together they say what we do with data.</p>
+        </div>
+      </div>
+      <p class="origin rv">Found in a shipwreck off the Greek island of Antikythera in 1901, a bronze mechanism of at least 30 gears predicted eclipses and the movements of the sky more than 2,000 years ago.</p>
+    </div>
+  </section>
+
+  <section id="who" data-ground="ivory" data-name="Who we are">
+    <div class="in-col">
+      <div class="sec-h">
+        <p class="label rv">Who we are</p>
+        <h2 class="rv">An engineer and an analyst.</h2>
+        <p class="lead rv">George builds data platforms. Giannis builds the reporting that sits on them. We have 15 years in data between us.</p>
+      </div>
+      <div class="people">
+        <article class="person rv">
+          <p class="role">Co-founder · Data engineering</p>
+          <h3>George Stratis</h3>
+          <p>George builds the pipelines and platforms that carry data from source systems to the people who use it.</p>
+          <dl><dt>Focus</dt><dd>Data platforms, pipelines, data quality</dd><dt>Based in</dt><dd>London</dd></dl>
+        </article>
+        <article class="person rv">
+          <p class="role">Co-founder · Analytics</p>
+          <h3>Giannis Zonia</h3>
+          <p>Giannis builds the dashboards and analysis that sit on those platforms, for the people who read them every day.</p>
+          <dl><dt>Focus</dt><dd>Dashboards, BI, analytics products, AI</dd><dt>Based in</dt><dd>Nicosia</dd></dl>
+        </article>
+      </div>
+      <div class="why">
+        <h3 class="rv">Why work with us.</h3>
+        <ul>
+          <li class="rv"><strong>With you from start to finish</strong><span>We guide you through every step, from the first conversation to the finished system.</span></li>
+          <li class="rv"><strong>New tools only when necessary</strong><span>We work with what you already have and suggest a new tool only when it is necessary.</span></li>
+          <li class="rv"><strong>We stay after the work is done</strong><span>When the project is finished, we are still there to maintain it and keep it running.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="questions" data-ground="white" data-name="Questions">
+    <div class="in-col">
+      <div class="sec-h">
+        <p class="label rv">Questions</p>
+        <h2 class="rv">Common questions.</h2>
+      </div>
+      <div class="faq">
+        <details class="rv"><summary>Our data is a mess. Is that a problem?</summary><p>No. Tidying it is part of the job. The first step is working out what your data can support today.</p></details>
+        <details class="rv"><summary>Do you work with the tools we already have?</summary><p>Yes. We start with what you have, spreadsheets included, and suggest a new tool only when the current one is holding the work back.</p></details>
+        <details class="rv"><summary>What can you automate?</summary><p>Whatever your team does by hand on a schedule: sending invoices, building reports, running an analysis, sending emails.</p></details>
+        <details class="rv"><summary>How do we start?</summary><p>Email us to arrange a meeting. Tell us in a line or two what you want to fix, and we’ll set up a call, in English or Greek.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" data-ground="navy" data-name="Contact">
+    <img class="close-logo" id="closeLogo" src="../assets/brand/noima-stacked-bronze-white-transparent.svg" alt="NÓIMA · Data · Analytics · Automation" width="290" height="310">
+    <div class="in">
+      <p class="label rv">Let’s talk</p>
+      <h2 class="rv">Let’s find the <span class="em">meaning</span> in your data.</h2>
+      <p class="lead rv">Tell us what you want from your data. We’ll reply with how we’d do it and roughly what it would take.</p>
+      <a class="mail rv" href="mailto:noimadata@gmail.com">noimadata@gmail.com</a>
+      <div class="btns rv">
+        <a class="btn" href="mailto:noimadata@gmail.com">Write to us</a>
+        <button class="btn ghost" type="button" id="copyBtn">Copy the address</button>
+      </div>
+      <p class="where rv">Based in Nicosia, Cyprus and London, United Kingdom. We work in English and Greek, in both countries and beyond.</p>
+    </div>
+    <footer>
+      <span>© 2026 NÓIMA</span>
+      <span>Data · Analytics · Automation</span>
+      <span>Nicosia, Cyprus · London, United Kingdom</span>
+      <span>Mechanism II · <a href="../index.html">All directions</a></span>
+    </footer>
+  </section>
+</main>
+
+<!-- Phone: the thumb dial -->
+<button class="dock" id="dock" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="nav" aria-label="Open the dial menu">
+  <span class="disc" aria-hidden="true"></span>
+  <span class="name" id="dockName" aria-hidden="true">Home</span>
+</button>
+
+<div class="nav" id="nav" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true">
+  <div class="nav-top">
+    <span class="label">Menu</span>
+    <button class="nav-x" type="button" id="navClose">Close</button>
+  </div>
+  <div class="dial-wrap">
+    <div class="dial" id="dial">
+      <svg viewBox="-4 -4 108 108" aria-hidden="true" focusable="false">
+        <g class="ringc"><use href="#p-ring"/><use href="#p-dots"/><use href="#p-letters"/><use href="#p-moon"/><use href="#p-sun"/></g>
+        <g id="navGear" class="gearc"><use href="#p-gear"/></g>
+      </svg>
+      <div class="dial-ring" id="dialRing"></div>
+    </div>
+  </div>
+  <div class="nav-info">
+    <p class="count" id="navCount">1 / 7</p>
+    <p class="t" id="navTitle" aria-live="polite">Home</p>
+    <p class="d" id="navDesc">Make sense of your data.</p>
+    <div class="nav-row">
+      <button class="step" type="button" id="navPrev">Previous</button>
+      <button class="go" type="button" id="navGo">Go</button>
+      <button class="step" type="button" id="navNext">Next</button>
+    </div>
+    <p class="tip">Turn the dial, or tap a stop.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var mqPhone=matchMedia('(max-width:760px)');
+  var secs=[].slice.call(document.querySelectorAll('main > section'));
+  var N=secs.length;
+  var STOPS=[
+    {id:'home',t:'Home',d:'Make sense of your data.'},
+    {id:'what',t:'What we do',d:'Data engineering, analytics and automation.'},
+    {id:'how',t:'How we work',d:'How a project runs, from α to ω.'},
+    {id:'name',t:'Name and symbol',d:'A Greek word and the first analogue computer.'},
+    {id:'who',t:'Who we are',d:'An engineer and an analyst.'},
+    {id:'questions',t:'Questions',d:'Common questions.'},
+    {id:'contact',t:'Contact',d:'Let’s find the meaning in your data.'}
+  ];
+  var sym=$('#sym'), gear=$('#gear'), mA1=$('#mA1'), mA2=$('#mA2'), mB=$('#mB');
+  var stopsNav=$('#stops'), stopLinks=[].slice.call(stopsNav.querySelectorAll('a'));
+  var dock=$('#dock'), dockName=$('#dockName'), closeLogo=$('#closeLogo'), contact=$('#contact');
+  var vw=0, vh=0, phone=false, base={x:0,y:0,s:100}, active=-1, closed=false;
+
+  /* stagger reveals among siblings */
+  var pending=[].slice.call(document.querySelectorAll('.rv'));
+  pending.forEach(function(el){
+    var sibs=[].filter.call(el.parentNode.children,function(c){return c.classList.contains('rv')});
+    var i=sibs.indexOf(el);
+    el.style.setProperty('--d',Math.min(i,5)*0.08+'s');
+  });
+
+  function countUp(root){
+    [].forEach.call(root.querySelectorAll('[data-count]'),function(el){
+      var to=+el.dataset.count; var run=el.__run=(el.__run||0)+1;
+      if(reduced){el.textContent=to.toLocaleString('en-GB');return}
+      var t0=null, dur=1300;
+      function step(t){ if(t0===null)t0=t; var p=Math.min(1,(t-t0)/dur); var e=1-Math.pow(1-p,3);
+        if(el.__run!==run) return; el.textContent=Math.round(to*e).toLocaleString('en-GB'); if(p<1) requestAnimationFrame(step); }
+      el.textContent='0'; requestAnimationFrame(step);
+    });
+  }
+
+  /* illustration panels: play on entering the view, reset on leaving so they replay */
+  var panels=[].slice.call(document.querySelectorAll('.panel'));
+  if('IntersectionObserver' in window){
+    var pio=new IntersectionObserver(function(es){ es.forEach(function(en){
+      if(en.isIntersecting&&en.intersectionRatio>=.35){ if(!en.target.classList.contains('play')){ en.target.classList.add('play'); countUp(en.target); } }
+      else if(!en.isIntersecting){ en.target.classList.remove('play'); }
+    }); },{threshold:[0,.35]});
+    panels.forEach(function(p){ pio.observe(p); });
+  }else{ panels.forEach(function(p){ p.classList.add('play'); }); }
+
+  /* grounds: one page colour, mixed by scroll position between neighbouring sections */
+  var PAL={
+    ivory:{bg:[250,246,239,1],ink:[8,24,46,1],muted:[85,96,116,1],line:[8,24,46,.16],accent:[168,130,80,1],btn:[255,255,255,1],dock:[255,255,255,1]},
+    white:{bg:[255,255,255,1],ink:[8,24,46,1],muted:[85,96,116,1],line:[8,24,46,.16],accent:[168,130,80,1],btn:[255,255,255,1],dock:[255,255,255,1]},
+    navy:{bg:[8,24,46,1],ink:[255,255,255,1],muted:[185,193,207,1],line:[255,255,255,.24],accent:[201,161,108,1],btn:[8,24,46,1],dock:[8,24,46,1]}
+  };
+  var PKEYS=['bg','ink','muted','line','accent','btn','dock'];
+  var PVARS={bg:['--bg'],ink:['--ink','--ring'],muted:['--muted'],line:['--line'],accent:['--accent','--gear'],btn:['--btn-ink'],dock:['--dockbg']};
+  var lastCss={}, swLin=[], swBusy=false, swLast=0;
+  function paint(tops){
+    var cur={}, i, k, nowMs=performance.now(), dtMs=swLast?nowMs-swLast:16;
+    swLast=nowMs; swBusy=false;
+    for(k=0;k<PKEYS.length;k++) cur[PKEYS[k]]=PAL[secs[0].dataset.ground][PKEYS[k]];
+    for(i=0;i<N-1;i++){
+      var tt;
+      if(secs[i].dataset.ground==='navy'||secs[i+1].dataset.ground==='navy'){
+        /* light <-> navy: a switch with a short timed fade, never parked on a grey midpoint */
+        var tg=tops[i+1]<.5*vh?1:0;
+        if(swLin[i]===undefined||reduced) swLin[i]=tg;
+        else if(swLin[i]!==tg){
+          var step=Math.min(dtMs,64)/550;
+          swLin[i]=tg>swLin[i]?Math.min(1,swLin[i]+step):Math.max(0,swLin[i]-step);
+          if(swLin[i]!==tg) swBusy=true;
+        }
+        var q=swLin[i]; tt=q<.5?2*q*q:1-Math.pow(-2*q+2,2)/2;
+      }else{
+        tt=clamp((.70*vh-tops[i+1])/(.40*vh));
+      }
+      if(tt<=0) continue;
+      var nx=PAL[secs[i+1].dataset.ground], mixd={};
+      for(k=0;k<PKEYS.length;k++){ var a=cur[PKEYS[k]], b=nx[PKEYS[k]];
+        mixd[PKEYS[k]]=[a[0]+(b[0]-a[0])*tt,a[1]+(b[1]-a[1])*tt,a[2]+(b[2]-a[2])*tt,a[3]+(b[3]-a[3])*tt]; }
+      cur=mixd;
+    }
+    for(k=0;k<PKEYS.length;k++){ var c=cur[PKEYS[k]];
+      var css='rgba('+Math.round(c[0])+','+Math.round(c[1])+','+Math.round(c[2])+','+(+c[3].toFixed(3))+')';
+      if(lastCss[PKEYS[k]]!==css){ lastCss[PKEYS[k]]=css; PVARS[PKEYS[k]].forEach(function(v){ document.body.style.setProperty(v,css); }); }
+    }
+  }
+
+  function layout(){
+    vw=document.documentElement.clientWidth; vh=window.innerHeight; phone=mqPhone.matches;
+    var S;
+    if(phone){
+      S=dock.offsetWidth||Math.min(264,vw-40);
+      base={x:(vw-S)/2, y:vh-dock.offsetHeight, s:S};
+      document.documentElement.style.removeProperty('--col'); document.documentElement.style.removeProperty('--wcol');
+    }else{
+      var wide=vw>1100;
+      S=wide?Math.min(.88*vh,.62*vw):Math.min(.8*vh,.6*vw);
+      base={x:vw-(wide?.70:.56)*S, y:(vh-S)/2+(wide?20:0), s:S};
+      var pad=parseFloat(getComputedStyle(secs[0]).paddingLeft)||40;
+      /* stops sit on a circle outside the whole symbol (radius 54 units), clear of the Moon */
+      var u=S/108, RS=54, ringLeft=base.x+S/2-(wide?RS:44)*u;
+      var room=ringLeft-(wide?190:36)-pad;
+      var col=Math.max(300,Math.min(640,room));
+      document.documentElement.style.setProperty('--col',col+'px');
+      document.documentElement.style.setProperty('--wcol',Math.max(col,Math.min(1040,room))+'px');
+      /* stops on the visible left arc, α side at the top down to ω */
+      var cx=base.x+S/2, cy=base.y+S/2;
+      stopLinks.forEach(function(a,i){
+        var th=(250-i*(140/(N-1)))*Math.PI/180;
+        var px=cx+RS*u*Math.cos(th), py=cy+RS*u*Math.sin(th);
+        a.style.right=(vw-px-4)+'px'; a.style.top=py+'px';
+      });
+    }
+  }
+
+  function clamp(v){return v<0?0:v>1?1:v}
+  function lerp(a,b,t){return a+(b-a)*t}
+
+  function frame(){
+    ticking=false;
+    var mid=vh*.5, idx=0, tops=[];
+    for(var i=0;i<N;i++){ var r=secs[i].getBoundingClientRect(); tops.push(r.top); if(r.top<=mid) idx=i; }
+    var t=idx;
+    if(idx<N-1){ var span=tops[idx+1]-tops[idx]; t=idx+clamp((mid-tops[idx])/span); }
+    paint(tops);
+    if(swBusy) req(); else swLast=0;
+    if(idx!==active){
+      active=idx;
+      document.body.dataset.ground=secs[idx].dataset.ground;
+      dockName.textContent=secs[idx].dataset.name;
+      stopLinks.forEach(function(a,i){ a.classList.toggle('on',i===idx); a.classList.toggle('past',i<idx);
+        if(i===idx) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); });
+    }
+
+    /* the closing: scroll-linked, so it reverses on the way back up */
+    var cTop=tops[N-1];
+    var k=clamp((vh*.8-cTop)/(vh*.65));
+    var e=k*k*(3-2*k);
+    var R=closeLogo.getBoundingClientRect();
+    var ts=R.width*108/184.72, tx=R.left+R.width*38.36/184.72, ty=R.top+R.height*12.5/197.58;
+    var s=lerp(base.s,ts,e), x=lerp(base.x,tx,e), y=lerp(base.y,ty,e);
+    sym.style.width=s+'px'; sym.style.height=s+'px';
+    sym.style.transform='translate3d('+x+'px,'+y+'px,0)';
+
+    var a0=reduced?0:window.scrollY*.06;
+    var a=a0+(Math.round(a0/360)*360-a0)*e;
+    gear.setAttribute('transform','rotate('+a.toFixed(2)+' 50 50)');
+
+    var prog=t/(N-1);
+    var sweep=phone?180*e:lerp(20+140*prog,180,e);
+    mA1.setAttribute('stroke-dashoffset',(180-sweep).toFixed(2));
+    mA2.setAttribute('stroke-dashoffset',(180-sweep).toFixed(2));
+    mB.setAttribute('stroke-dashoffset',phone?(100-100*prog).toFixed(2):'100');
+
+    stopsNav.style.opacity=(1-clamp(e*3)).toFixed(3);
+    stopsNav.style.visibility=e>.34?'hidden':'visible';
+    if(phone){ dock.style.transform='translateX(-50%) translateY('+(e*115).toFixed(1)+'%)'; dock.style.visibility=e>.98?'hidden':'visible'; }
+    else { dock.style.transform=''; dock.style.visibility=''; }
+
+    var nowClosed=k>=1;
+    if(nowClosed!==closed){ closed=nowClosed; document.body.classList.toggle('closed',closed); }
+
+    /* reveals: position-based, so nothing stays hidden after a jump */
+    if(pending.length){
+      var lim=vh*.9;
+      pending=pending.filter(function(el){
+        if(el.getBoundingClientRect().top<lim){ el.classList.add('in'); return false; }
+        return true;
+      });
+    }
+  }
+  var ticking=false;
+  function req(){ if(!ticking){ ticking=true; requestAnimationFrame(frame); } }
+  function relayout(){ layout(); req(); }
+  addEventListener('scroll',req,{passive:true});
+  addEventListener('resize',relayout);
+  addEventListener('load',relayout);
+  if(mqPhone.addEventListener) mqPhone.addEventListener('change',relayout);
+  closeLogo.addEventListener('load',req);
+  layout(); frame();
+
+  /* copy the address */
+  var copyBtn=$('#copyBtn');
+  copyBtn.addEventListener('click',function(){
+    var done=function(){ copyBtn.textContent='Address copied'; setTimeout(function(){copyBtn.textContent='Copy the address'},2200); };
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText('noimadata@gmail.com').then(done,done); } else done();
+  });
+
+  /* ---------- the dial navigator ---------- */
+  var nav=$('#nav'), dial=$('#dial'), ring=$('#dialRing'), navGear=$('#navGear');
+  var menuBtn=$('#menuBtn'), navClose=$('#navClose');
+  var step=360/N, rot=0, sel=0, opener=null, isOpen=false, nstops=[];
+  STOPS.forEach(function(sp,i){
+    var b=document.createElement('button'); b.type='button'; b.className='nstop'; b.dataset.i=i;
+    b.setAttribute('aria-label',sp.t);
+    var th=(i*step-90)*Math.PI/180;
+    b.style.left=(50+47*Math.cos(th))+'%'; b.style.top=(50+47*Math.sin(th))+'%';
+    b.innerHTML='<span>'+(i+1)+'</span>';
+    ring.appendChild(b); nstops.push(b);
+  });
+  function mod(n,m){return ((n%m)+m)%m}
+  function apply(anim){
+    var tr=(anim&&!reduced)?'transform .5s cubic-bezier(.2,.7,.2,1)':'none';
+    ring.style.transition=tr; ring.style.transform='rotate('+rot+'deg)';
+    navGear.style.transition=tr; navGear.style.transform='rotate('+(-rot*1.5)+'deg)';
+    nstops.forEach(function(b,i){ var sp=b.firstChild; sp.style.transition=tr+(tr==='none'?'':', background-color .3s ease, color .3s ease, width .3s ease, height .3s ease');
+      b.style.transition=tr; b.style.transform='rotate('+(-rot)+'deg)'; b.classList.toggle('sel',i===sel); });
+    $('#navCount').textContent=(sel+1)+' / '+N;
+    $('#navTitle').textContent=STOPS[sel].t;
+    $('#navDesc').textContent=STOPS[sel].d;
+  }
+  function setSel(i,anim){
+    sel=mod(i,N);
+    var target=-sel*step; target+=Math.round((rot-target)/360)*360;
+    rot=target; apply(anim);
+  }
+  function openNav(from){
+    if(isOpen) return; isOpen=true; opener=from||null;
+    rot=0; setSel(Math.max(0,active),false);
+    nav.classList.add('open'); nav.setAttribute('aria-hidden','false');
+    document.documentElement.classList.add('locked');
+    menuBtn.setAttribute('aria-expanded','true'); dock.setAttribute('aria-expanded','true');
+    setTimeout(function(){ navClose.focus(); },60);
+  }
+  function closeNav(){
+    if(!isOpen) return; isOpen=false;
+    nav.classList.remove('open'); nav.setAttribute('aria-hidden','true');
+    document.documentElement.classList.remove('locked');
+    menuBtn.setAttribute('aria-expanded','false'); dock.setAttribute('aria-expanded','false');
+    if(opener&&opener.offsetParent!==null) opener.focus();
+  }
+  function go(){
+    var id=STOPS[sel].id; closeNav();
+    var el=document.getElementById(id);
+    requestAnimationFrame(function(){ el.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'}); });
+  }
+  menuBtn.addEventListener('click',function(){ openNav(menuBtn); });
+  navClose.addEventListener('click',closeNav);
+  $('#navGo').addEventListener('click',go);
+  $('#navPrev').addEventListener('click',function(){ setSel(sel-1,true); });
+  $('#navNext').addEventListener('click',function(){ setSel(sel+1,true); });
+  addEventListener('keydown',function(e){
+    if(!isOpen) return;
+    if(e.key==='Escape'){ closeNav(); }
+    else if(e.key==='ArrowRight'||e.key==='ArrowDown'){ setSel(sel+1,true); e.preventDefault(); }
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){ setSel(sel-1,true); e.preventDefault(); }
+    else if(e.key==='Tab'){ /* keep focus inside the dialog */
+      var f=[].slice.call(nav.querySelectorAll('button')); var first=f[0], last=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===first){ last.focus(); e.preventDefault(); }
+      else if(!e.shiftKey&&document.activeElement===last){ first.focus(); e.preventDefault(); }
+    }
+  });
+  /* keyboard activation of a stop (pointer taps are handled below) */
+  ring.addEventListener('click',function(e){
+    if(e.detail!==0) return; var b=e.target.closest('.nstop'); if(!b) return;
+    var i=+b.dataset.i; if(i===sel) go(); else setSel(i,true);
+  });
+
+  /* drag to turn: one finger, angle from the centre, snaps to the nearest stop */
+  var drag=null;
+  function ang(e){ var r=dial.getBoundingClientRect(); return Math.atan2(e.clientY-(r.top+r.height/2), e.clientX-(r.left+r.width/2))*180/Math.PI; }
+  dial.addEventListener('pointerdown',function(e){
+    if(e.button!==undefined&&e.button>0) return;
+    drag={last:ang(e),x:e.clientX,y:e.clientY,moved:0,stop:e.target.closest?e.target.closest('.nstop'):null,id:e.pointerId};
+    try{ dial.setPointerCapture(e.pointerId); }catch(_){}
+    e.preventDefault();
+  });
+  dial.addEventListener('pointermove',function(e){
+    if(!drag||e.pointerId!==drag.id) return;
+    var a=ang(e), d=a-drag.last; if(d>180)d-=360; if(d<-180)d+=360;
+    drag.last=a; drag.moved=Math.max(drag.moved,Math.hypot(e.clientX-drag.x,e.clientY-drag.y));
+    if(drag.moved>6){ rot+=d; sel=mod(Math.round(-rot/step),N); apply(false); }
+  });
+  function endDrag(e){
+    if(!drag||e.pointerId!==drag.id) return;
+    var d=drag; drag=null;
+    try{ dial.releasePointerCapture(e.pointerId); }catch(_){}
+    if(d.moved<=6){
+      if(d.stop){ var i=+d.stop.dataset.i; if(i===sel) go(); else setSel(i,true); }
+      return;
+    }
+    rot=Math.round(rot/step)*step; sel=mod(Math.round(-rot/step),N); apply(true);
+  }
+  dial.addEventListener('pointerup',endDrag);
+  dial.addEventListener('pointercancel',endDrag);
+
+  /* dock: tap, or drag it up, to open */
+  var dd=null;
+  dock.addEventListener('pointerdown',function(e){ dd={y:e.clientY,id:e.pointerId}; });
+  dock.addEventListener('pointermove',function(e){ if(dd&&e.pointerId===dd.id&&dd.y-e.clientY>22){ dd=null; openNav(dock); } });
+  dock.addEventListener('pointerup',function(){ dd=null; });
+  dock.addEventListener('pointercancel',function(){ dd=null; });
+  dock.addEventListener('click',function(){ openNav(dock); });
+})();
+</script>
+<style id="tone-css">.tone-off>*{opacity:0!important;transition:opacity .3s ease!important}.tone-in>*{transition:opacity .5s ease!important}</style>
+<script>
+/* content of a section only shows while the page ground matches that section (light or navy) */
+(function(){
+  var S=[].slice.call(document.querySelectorAll('[data-ground]')).filter(function(e){return e!==document.body&&e!==document.documentElement});
+  if(!S.length) return;
+  function dark(e){return e.getAttribute('data-ground')==='navy'}
+  var cur=null;
+  function upd(){
+    var mid=window.innerHeight*0.5, sec=S[0], i;
+    for(i=0;i<S.length;i++){ if(S[i].getBoundingClientRect().top<=mid) sec=S[i]; }
+    var d=dark(sec); if(d===cur) return;
+    var first=cur===null; cur=d;
+    S.forEach(function(e){
+      if(dark(e)!==d){ e.classList.remove('tone-in'); e.classList.add('tone-off'); }
+      else if(e.classList.contains('tone-off')){
+        e.classList.remove('tone-off');
+        if(!first){ e.classList.add('tone-in'); setTimeout(function(){ e.classList.remove('tone-in'); },600); }
+      }
+    });
+  }
+  window.addEventListener('scroll',upd,{passive:true}); window.addEventListener('resize',upd); window.addEventListener('load',upd); upd();
+})();
+</script>
+</body>
+</html>

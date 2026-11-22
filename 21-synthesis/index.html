@@ -1,0 +1,1401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NÓIMA · Synthesis</title>
+<meta name="description" content="NÓIMA is a data engineering, analytics and automation company in Nicosia and London. Make sense of your data.">
+<link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500&display=swap" rel="stylesheet">
+<script>document.documentElement.className += ' js';</script>
+<style>
+@font-face{font-family:"GFS Neohellenic";src:url("../assets/fonts/GFSNeohellenic.ttf") format("truetype");font-display:swap}
+:root{
+  --navy:#08182E; --ivory:#F7F3EA; --white:#FFFFFF; --bronze:#A88250; --bronze-n:#C9A16C;
+  /* live theme: written by the scroll handler, blended between grounds */
+  --bg:#F7F3EA; --ink:#08182E; --ink2:#465367; --ink3:#66728A;
+  --line:rgba(8,24,46,.14); --line-s:rgba(8,24,46,.32); --accent:#A88250;
+  --pad:clamp(20px,4.4vw,64px); --hdr:72px; --bar:0px;
+  --serif:"Newsreader","Source Serif 4",Georgia,serif;
+  --sans:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --greek:"GFS Neohellenic","Newsreader",serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:calc(var(--hdr) + 8px);overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img,video,svg{display:block;max-width:100%}
+img{height:auto}
+a{color:inherit}
+h1,h2,h3,h4,p,ul,ol,dl,dd,figure{margin:0;padding:0}
+ul,ol{list-style:none}
+button{font:inherit;color:inherit}
+.gr{font-family:var(--greek);font-weight:400}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+::selection{background:#08182E;color:#fff}
+
+.wrap{max-width:1280px;margin:0 auto;padding:0 var(--pad)}
+.h1,.h2{font-family:var(--serif);font-weight:500;letter-spacing:-.012em;text-wrap:balance}
+.h1{font-size:clamp(34px,4.3vw,58px);line-height:1.08}
+.h2{font-size:clamp(27px,3vw,40px);line-height:1.14}
+.h3{font-weight:600;font-size:20px;line-height:1.3;letter-spacing:-.005em}
+.label{display:flex;align-items:center;gap:12px;font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.label::before{content:"";width:28px;height:1px;background:var(--accent);flex:none}
+.lead{font-size:18px;color:var(--ink2);max-width:46ch;text-wrap:pretty}
+.em{color:var(--accent)}
+
+/* buttons: rectangular, colour-change hover */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 26px;border-radius:2px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);font-weight:500;font-size:15px;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background-color .3s var(--ease),color .3s var(--ease),border-color .3s var(--ease)}
+.btn:hover,.btn:focus-visible{background:var(--accent);border-color:var(--accent);color:#08182E}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover,.btn.ghost:focus-visible{background:transparent;border-color:var(--accent);color:var(--accent)}
+.tlink{display:inline-flex;align-items:center;min-height:44px;font-weight:500;font-size:15.5px;text-decoration:none}
+.tlink span{display:inline-block;margin-left:.45em;transition:transform .3s var(--ease)}
+.tlink:hover span{transform:translateX(5px)}
+.tlink u{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px}
+
+/* reveal */
+.js .rv{opacity:0;transform:translateY(20px);transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:calc(var(--d,0) * 90ms)}
+.js .rv.in{opacity:1;transform:none}
+
+/* ---------- header ---------- */
+.hdr{position:fixed;inset:0 0 auto 0;height:var(--hdr);z-index:40;background:var(--bg);border-bottom:1px solid transparent}
+.hdr.scrolled{border-bottom-color:var(--line)}
+.hdr .bar{height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 var(--pad)}
+.logo{position:relative;display:block;width:176px;flex:none}
+.logo img{width:176px}
+.logo .l-n{position:absolute;inset:0;opacity:0}
+.logo img{transition:opacity .35s ease}
+body[data-ground="navy"] .logo .l-d{opacity:0}
+body[data-ground="navy"] .logo .l-n{opacity:1}
+.nav{display:flex;align-items:center;gap:clamp(16px,2.2vw,32px);font-size:15px;font-weight:500}
+.nav a{text-decoration:none;padding:10px 0;position:relative}
+.nav a:not(.btn)::after{content:"";position:absolute;left:0;right:0;bottom:6px;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
+.nav a:not(.btn):hover::after{transform:scaleX(1)}
+.nav .btn{min-height:42px;padding:0 20px}
+.menu-btn{display:none;min-height:44px;padding:0 18px;border-radius:2px;border:1px solid var(--ink);background:transparent;font-weight:500;font-size:15px;cursor:pointer;transition:color .3s var(--ease),border-color .3s var(--ease)}
+.menu-btn:hover,.menu-btn:focus-visible{background:transparent;border-color:var(--accent);color:var(--accent)}
+.sheet{display:none}
+
+/* ---------- hero ---------- */
+.hero{display:grid;grid-template-columns:minmax(0,46fr) minmax(0,54fr);margin-top:var(--hdr);min-height:max(600px,calc(100vh - var(--hdr)))}
+.hero-copy{display:flex;flex-direction:column;justify-content:center;gap:22px;padding:56px clamp(28px,4.4vw,72px) 72px var(--pad)}
+.hero-copy .def{font-size:15px;color:var(--ink2)}
+.hero-copy .def .gr{font-size:24px;color:var(--ink);margin-right:.35em}
+.hero .h1{max-width:11em}
+.hero .lead{max-width:34ch;font-size:19px}
+.hero .acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+.hero-film{position:relative;overflow:hidden;background:#08182E;min-height:320px}
+.hero-film video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.js .hero-film{clip-path:inset(0 0 0 100%);transition:clip-path 1.6s var(--ease) .15s}
+.js .hero-film video{transform:scale(1.08);transition:transform 2.6s var(--ease) .15s}
+.js .loaded .hero-film{clip-path:inset(0)}
+.js .loaded .hero-film video{transform:none}
+
+/* ---------- story: the point stage ---------- */
+.story{display:grid;grid-template-columns:minmax(0,45fr) minmax(0,55fr)}
+.stage{grid-column:2;grid-row:1;align-self:start;position:sticky;top:0;height:100vh;min-height:640px;overflow:hidden;touch-action:pan-y}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;transition:opacity .9s var(--ease)}
+.stage .sym{position:absolute;opacity:0;transform:scale(.985);transition:opacity .9s var(--ease),transform 1.2s var(--ease);pointer-events:none}
+.stage.done canvas{opacity:0}
+.stage.done .sym{opacity:1;transform:none}
+.steps{grid-column:1;grid-row:1;padding-bottom:35vh}
+.track{display:none}
+.step{height:100vh;min-height:640px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:18px;padding:var(--hdr) clamp(20px,3vw,48px) 40px var(--pad)}
+.js .step{opacity:.18;transition:opacity .6s var(--ease)}
+.js .step.on{opacity:1}
+.step .lead{max-width:30em;font-size:17.5px}
+.step .acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px 26px;margin-top:4px}
+
+.prog{position:absolute;left:9%;right:9%;bottom:34px;display:flex;justify-content:space-between;z-index:2}
+.prog::before,.prog i{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--line)}
+.prog i{background:var(--ink);transform-origin:left;transform:scaleX(0)}
+.prog button{position:relative;background:none;border:0;padding:14px 0 6px;min-height:44px;cursor:pointer;font-size:12.5px;font-weight:500;letter-spacing:.04em;color:var(--ink3);transition:color .3s}
+.prog button b{display:none}
+.prog button::before{content:"";position:absolute;top:-3px;left:0;width:7px;height:7px;border-radius:50%;background:var(--bg);border:1px solid var(--ink3);transition:background-color .3s,border-color .3s}
+.prog button:hover{color:var(--ink)}
+.prog button.on{color:var(--ink)}
+.prog button.on::before{background:var(--ink);border-color:var(--ink)}
+.probe{position:fixed;top:0;left:0;width:0;height:100vh;height:100svh;visibility:hidden;pointer-events:none}
+
+/* ---------- illustration panels: navy, drawn, animated ---------- */
+.vizw{width:min(100%,clamp(420px,calc(30vw + 28px),590px));margin-top:6px}
+.viz{background:#08182E;color:#fff;border-radius:2px;padding:16px 18px 14px}
+.viz svg{width:100%;height:auto;overflow:visible}
+.viz text{font:500 11px var(--sans);fill:rgba(255,255,255,.82)}
+.viz .st{fill:none;stroke:rgba(255,255,255,.55);stroke-width:1.2;stroke-linecap:round}
+.viz .sb{fill:none;stroke:#C9A16C;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.viz .nd{fill:#08182E;stroke:#fff;stroke-width:1.3}
+.viz .mv{fill:#C9A16C}
+.viz .bar{fill:rgba(255,255,255,.88)}
+.viz .bar.pk{fill:#C9A16C}
+.viz .row{fill:rgba(255,255,255,.88)}
+.viz .dash{stroke-dasharray:3 5}
+.viz .ktop{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px}
+.viz .ktop small{font-size:clamp(11.5px,.85vw,15px);font-weight:500;color:rgba(255,255,255,.72)}
+.viz .ktop strong{font-weight:500;font-size:clamp(24px,1.7vw,32px);line-height:1.1;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.cap{margin-top:8px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+/* animation states (only when scripting is on) */
+.js .viz .dr{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1s var(--ease) calc(var(--i,0) * 140ms)}
+.js .viz .fd{opacity:0;transition:opacity .5s ease calc(var(--i,0) * 140ms)}
+.js .viz .gw{transform:scaleY(0);transform-box:fill-box;transform-origin:50% 100%;transition:transform .8s var(--ease) calc(var(--i,0) * 55ms)}
+.js .viz .gx{transform:scaleX(0);transform-box:fill-box;transform-origin:0 50%;transition:transform .6s var(--ease) calc(var(--i,0) * 140ms)}
+.js .viz.play .dr{stroke-dashoffset:0}
+.js .viz.play .fd{opacity:1}
+.js .viz.play .gw,.js .viz.play .gx{transform:none}
+.js .viz:not(.play) .dr,.js .viz:not(.play) .fd,.js .viz:not(.play) .gw,.js .viz:not(.play) .gx{transition-duration:.01s;transition-delay:0s}
+
+/* ---------- sections ---------- */
+.sec{padding:clamp(120px,11vw,150px) 0}
+.sec.full{min-height:100vh;display:flex;align-items:center}
+.sec.full > .wrap{width:100%}
+.head{display:grid;gap:16px;max-width:760px;margin-bottom:clamp(40px,5vw,64px)}
+.svcs{display:none}
+.get{margin-top:8px;display:grid;gap:0}
+.get li{padding:11px 0;border-top:1px solid var(--line);font-size:15.5px;font-weight:500}
+.get li:last-child{border-bottom:1px solid var(--line)}
+
+/* how we work: the line runs behind opaque discs, never over the numerals */
+.hsteps{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 40px}
+.hsteps::before,.hsteps::after{content:"";position:absolute;z-index:0;left:0;right:0;top:17px;height:1px;background:var(--line-s)}
+.hsteps::after{height:2px;top:16.5px;background:var(--accent);transform-origin:left;transform:scaleX(var(--p,0))}
+.hstep{position:relative;z-index:1;display:grid;gap:8px;align-content:start}
+.hstep .n{position:relative;z-index:1;width:35px;height:35px;border-radius:50%;background:var(--bg);border:1px solid var(--line-s);display:grid;place-items:center;font-size:14px;font-weight:500;margin-bottom:18px;transition:background-color .4s,color .4s,border-color .4s}
+.hstep .n.gr{font-size:20px;line-height:1;padding-bottom:3px}
+.hstep.done .n{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.hstep p{color:var(--ink2);font-size:16px;max-width:26em}
+.keep{margin-top:clamp(40px,4.5vw,64px);padding-top:22px;border-top:1px solid var(--line);font-family:var(--serif);font-weight:500;font-size:22px}
+
+/* from raw to readable: the lens */
+.lens-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:0 32px;align-items:center}
+.lens-text{grid-column:1/5;display:grid;gap:16px}
+.lens-text p.t{color:var(--ink2);text-wrap:pretty}
+.lens-hint{font-size:15px;color:var(--ink3)}
+.lens-fig{grid-column:6/13}
+.lens-keys{display:flex;justify-content:space-between;font-size:12.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px}
+.lens-keys .k-m,.lens-hint .h-m{display:none}
+.panel{--r:118px;--lx:50%;--ly:50%;--wx:50%;position:relative;overflow:hidden;background:#fff;color:#08182E;border:1px solid rgba(8,24,46,.14);border-radius:2px;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:default}
+.layer{padding:14px 0;font-size:14.5px;font-variant-numeric:tabular-nums;line-height:1}
+.layer .row{height:36px;display:flex;align-items:center;padding:0 22px;white-space:nowrap;overflow:hidden;border-bottom:1px solid rgba(8,24,46,.06)}
+.layer--raw{color:#66728A}
+.layer--clean{position:absolute;inset:0;background:#08182E;color:#fff;clip-path:circle(var(--r) at var(--lx) var(--ly));will-change:clip-path}
+.layer--clean .row{display:grid;grid-template-columns:1fr 1.25fr 1.1fr 1.1fr .9fr;gap:0 14px;border-bottom-color:rgba(255,255,255,.1)}
+.layer--clean .row span:nth-child(4){text-align:right;font-weight:500}
+.layer--clean .row span:nth-child(5){color:#C9A16C}
+.layer--clean .row span:first-child{color:rgba(255,255,255,.72)}
+.ring{position:absolute;left:0;top:0;width:calc(var(--r)*2 + 22px);height:calc(var(--r)*2 + 22px);margin:calc(var(--r)*-1 - 11px) 0 0 calc(var(--r)*-1 - 11px);transform:translate3d(var(--lx),var(--ly),0);pointer-events:none}
+.ring svg{width:100%;height:100%;overflow:visible}
+.ring .arc{fill:none;stroke:#C9A16C;stroke-width:1.6;vector-effect:non-scaling-stroke;stroke-linecap:round}
+.ring .dot{fill:#C9A16C}
+.wipe{display:none}
+
+/* full-bleed image band */
+.band{position:relative;height:100vh;min-height:560px;overflow:hidden;background:#08182E}
+.band img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 2.4s var(--ease)}
+.band.in img{transform:none}
+.band-panel{position:absolute;left:var(--pad);bottom:clamp(40px,7vh,80px);width:min(560px,calc(100% - 2 * var(--pad)));background:#08182E;color:#F7F3EA;padding:clamp(26px,3vw,40px);display:grid;gap:16px;border-radius:2px}
+.band-panel .label{color:#B4BDCB}
+.band-panel .label::before{background:#C9A16C}
+.band-panel .q{font-family:var(--serif);font-weight:500;font-size:clamp(21px,2vw,27px);line-height:1.3;text-wrap:pretty}
+
+/* name and symbol: strict, equal grid */
+.ns3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3.5vw,56px)}
+.ns3 > div{border-top:1px solid var(--line);padding-top:22px;display:grid;grid-template-rows:auto 160px auto;gap:20px;align-content:start}
+.ns3 .fig{display:flex;align-items:center;justify-content:flex-start;height:160px}
+.ns3 .word{font-family:var(--greek);font-size:68px;line-height:1}
+.ns3 .fig img.s{width:150px;height:150px}
+.ns3 .fig img.l{width:300px}
+.ns3 p.t{color:var(--ink2);font-size:16px;max-width:27em}
+.ns3 .gr,.ns4 .gr{font-size:1.18em;color:var(--ink)}
+.ns4{margin-top:clamp(36px,4vw,52px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,2.6vw,40px)}
+.ns4 > div{border-top:1px solid var(--line);padding-top:16px;display:grid;gap:6px;align-content:start}
+.ns4 dt{font-weight:600;font-size:15.5px}
+.ns4 dd{color:var(--ink2);font-size:15px}
+.origin{margin-top:clamp(36px,4vw,52px);padding-top:20px;border-top:1px solid var(--line);max-width:52em;font-size:15px;color:var(--ink2)}
+
+/* who we are */
+.people{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,5vw,80px)}
+.person{border-top:1px solid var(--ink);padding-top:24px;display:grid;gap:12px;align-content:start}
+.person .role{font-size:12.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3)}
+.person h3{font-family:var(--serif);font-weight:500;font-size:30px;letter-spacing:-.01em;line-height:1.2}
+.person p{color:var(--ink2);font-size:16px}
+.person p.job{color:var(--ink);font-weight:500}
+.person dl{margin-top:6px}
+.person dl div{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:10px 0;border-top:1px solid var(--line);font-size:14.5px}
+.person dt{color:var(--ink3)}
+.why{margin-top:clamp(56px,7vw,96px)}
+.why ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(28px,5vw,80px);margin-top:28px}
+.why li{padding:18px 0;border-top:1px solid var(--line);display:grid;gap:4px}
+.why li b{font-weight:600}
+.why li span{color:var(--ink2);font-size:15.5px}
+
+/* questions */
+.faq-grid{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:clamp(28px,6vw,110px);align-items:start}
+.faq-grid .head{margin-bottom:0}
+.faq details{border-top:1px solid var(--line)}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;min-height:68px;padding:14px 0;font-weight:500;font-size:18px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-weight:400;font-size:24px;line-height:1;color:var(--accent);transition:transform .3s var(--ease)}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{padding:0 40px 22px 0;color:var(--ink2);max-width:40em}
+
+/* contact + closing + footer */
+.contact{min-height:100vh;display:flex;align-items:center;padding:clamp(120px,11vw,150px) 0 80px}
+.contact > .wrap{width:100%}
+.contact .grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(28px,5vw,80px);align-items:center}
+.contact .txt{display:grid;gap:18px;justify-items:start}
+.contact .mail{font-family:var(--serif);font-size:clamp(22px,2.3vw,28px);font-weight:500;text-decoration:none}
+.contact .mail:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:6px}
+.contact .acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
+.contact .side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:22px;padding-top:22px;border-top:1px solid var(--line);font-size:15px;color:var(--ink2);width:100%;max-width:560px}
+.contact .side b{color:var(--ink);font-weight:600}
+.closing{display:flex;justify-content:center;align-items:center}
+.close-logo{width:min(310px,64vw)}
+.js .close-logo{opacity:0;transition:opacity .6s ease}
+.js body.closed .close-logo{opacity:1}
+.fly{position:fixed;left:0;top:0;width:100px;height:100px;z-index:30;pointer-events:none;transform-origin:0 0;opacity:var(--o,0);visibility:hidden;will-change:transform,opacity}
+.fly.live{visibility:visible}
+body.closed .fly{opacity:0;transition:opacity .01s linear .55s}
+.ftr{border-top:1px solid var(--line);padding:36px 0 44px}
+.ftr .in{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:24px}
+.ftr img{width:190px}
+.ftr nav{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:14.5px}
+.ftr nav a{text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.ftr nav a:hover{text-decoration:underline;text-underline-offset:5px}
+.ftr .small{width:100%;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;font-size:13px;color:var(--ink2)}
+.bbar{display:none}
+
+/* ---------- mid widths ---------- */
+@media (max-width:1100px){
+  .nav a:not(.btn){display:none}
+  .menu-btn{display:inline-flex;align-items:center}
+  .nav{gap:10px}
+  .sheet{--bg:#F7F3EA;--ink:#08182E;--ink2:#465367;--ink3:#66728A;--line:rgba(8,24,46,.14);--accent:#A88250;color:var(--ink);
+    display:flex;position:fixed;inset:var(--hdr) 0 0 0;z-index:39;background:var(--bg);flex-direction:column;justify-content:space-between;padding:28px var(--pad) calc(28px + env(safe-area-inset-bottom));overflow:auto;opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .3s var(--ease),transform .3s var(--ease),visibility 0s .3s}
+  .sheet.open{opacity:1;visibility:visible;transform:none;transition:opacity .3s var(--ease),transform .3s var(--ease)}
+  .sheet ul{border-top:1px solid var(--ink)}
+  .sheet li a{display:flex;align-items:center;justify-content:space-between;min-height:60px;border-bottom:1px solid var(--line);text-decoration:none;font-family:var(--serif);font-size:24px;font-weight:500}
+  .sheet li a span{color:var(--accent);font-size:20px}
+  .sheet .bot{display:grid;gap:14px;padding-top:28px;font-size:14.5px;color:var(--ink2)}
+  .sheet .bot .btn{width:100%}
+  html.locked{overflow:hidden}
+  .hsteps{gap:0 24px}
+  .lens-text{grid-column:1/-1;margin-bottom:36px}
+  .lens-fig{grid-column:1/-1}
+  .ns3 .fig img.l{width:min(100%,260px)}
+  .ns4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .faq-grid{grid-template-columns:1fr}
+  .faq-grid .head{margin-bottom:12px}
+}
+
+/* ---------- phone ---------- */
+@media (max-width:760px){
+  :root{--hdr:60px;--bar:60px;--sh:max(300px,40vh)}
+  @supports (height:1svh){ :root{--sh:max(300px,40svh)} }
+  body{font-size:16px;padding-bottom:calc(var(--bar) + env(safe-area-inset-bottom))}
+  .h1{font-size:35px} .h2{font-size:27px}
+  .logo,.logo img{width:148px}
+  .nav .btn{display:none}
+  .menu-btn{padding:0 16px}
+
+  .hero{display:flex;flex-direction:column;min-height:calc(100vh - var(--hdr));min-height:calc(100svh - var(--hdr) - var(--bar))}
+  .hero-copy{padding:36px 20px 30px;gap:16px}
+  .hero .lead{font-size:17px}
+  .hero .acts .btn{flex:1 1 auto}
+  .hero-film{flex:1 1 0;min-height:230px}
+  .js .hero-film{clip-path:inset(100% 0 0 0)}
+
+  .story{display:block}
+  .track{display:block;height:380vh}
+  .stage{position:sticky;top:var(--hdr);height:calc(100vh - var(--hdr) - var(--bar) - var(--sh));height:calc(100svh - var(--hdr) - var(--bar) - var(--sh));min-height:0}
+  .steps{position:sticky;top:calc(100vh - var(--bar) - var(--sh));top:calc(100svh - var(--bar) - var(--sh));height:var(--sh);padding-bottom:0;background:var(--bg);border-top:1px solid var(--line)}
+  .step{position:absolute;inset:0;height:auto;min-height:0;justify-content:flex-start;gap:9px;padding:16px 20px 8px;overflow:hidden}
+  .js .step{opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .45s var(--ease),transform .45s var(--ease),visibility 0s .45s}
+  .js .step.on{opacity:1;visibility:visible;transform:none;transition:opacity .45s var(--ease) .1s,transform .45s var(--ease) .1s}
+  html:not(.js) .step{position:static}
+  .step .lead{font-size:15px;line-height:1.52}
+  .step .vizw{display:none}
+
+  .prog{left:0;right:0;bottom:4px;justify-content:center;gap:2px}
+  .prog::before,.prog i{display:none}
+  .prog button{width:46px;height:46px;min-height:46px;padding:0;display:grid;place-items:center}
+  .prog button::before{display:none}
+  .prog button span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .prog button b{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--bg);font-weight:600;font-size:13px;color:var(--ink2);transition:background-color .3s,color .3s,border-color .3s}
+  .prog button.on b{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+
+  .sec{padding:72px 0}
+  .head{margin-bottom:30px;gap:12px}
+  .svcs{display:block;padding-top:56px}
+  .svc{display:grid;gap:18px;padding:30px 0;border-top:1px solid var(--line)}
+  .svc .vizw{width:100%;margin:0}
+
+  .hsteps{grid-template-columns:1fr;gap:0}
+  .hsteps::before,.hsteps::after{left:17px;right:auto;top:8px;bottom:8px;width:1px;height:auto}
+  .hsteps::after{left:16.5px;width:2px;transform-origin:top;transform:scaleY(var(--p,0))}
+  .hstep{grid-template-columns:35px 1fr;gap:4px 18px;padding:0 0 30px}
+  .hstep:last-child{padding-bottom:0}
+  .hstep .n{grid-row:1 / 3;margin:0}
+  .hstep h3{align-self:center}
+  .hstep p{grid-column:2}
+
+  .lens-grid{display:block}
+  .panel{--r:0px}
+  .layer{font-size:12.5px;padding:8px 0}
+  .layer .row{height:38px;padding:0 12px}
+  .layer .row:nth-child(n+11){display:none}
+  .layer--clean{clip-path:inset(0 calc(100% - var(--wx)) 0 0)}
+  .layer--clean .row{grid-template-columns:.9fr 1fr 1.1fr 1.15fr .8fr;gap:0 8px}
+  .ring{display:none}
+  .wipe{display:block;position:absolute;top:0;bottom:0;left:var(--wx);width:48px;margin-left:-24px;cursor:ew-resize}
+  .wipe::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:#C9A16C}
+  .wipe::after{content:"";position:absolute;left:0;top:50%;width:48px;height:48px;margin-top:-24px;border-radius:50%;background:#F7F3EA;border:2px solid #C9A16C;box-sizing:border-box}
+  .wipe i{position:absolute;z-index:1;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#08182E}
+  .wipe i:first-child{left:14px}.wipe i:last-child{right:14px}
+  .lens-keys .k-d{display:none}.lens-keys .k-m{display:inline}
+  .lens-hint .h-d{display:none}.lens-hint .h-m{display:inline}
+
+  .band{height:100vh;height:100svh}
+  .band-panel{left:16px;bottom:calc(var(--bar) + 20px);width:calc(100% - 32px)}
+
+  .ns3{grid-template-columns:1fr;gap:36px}
+  .ns3 > div{grid-template-rows:auto 140px auto;gap:16px}
+  .ns3 .fig{height:140px}
+  .ns3 .word{font-size:56px}
+  .ns3 .fig img.s{width:132px;height:132px}
+  .ns4{grid-template-columns:1fr;gap:18px}
+  .people{grid-template-columns:1fr;gap:44px}
+  .person h3{font-size:26px}
+  .why ol{grid-template-columns:1fr}
+  .faq summary{font-size:16.5px}
+  .faq details p{padding-right:0}
+  .contact{padding:72px 0 48px}
+  .contact .grid{grid-template-columns:1fr;gap:40px}
+  .closing{order:-1;justify-content:flex-start}
+  .close-logo{width:210px}
+  .contact .acts{width:100%}
+  .contact .acts .btn{flex:1 1 100%}
+  .ftr nav{display:none}
+  .ftr .small{flex-direction:column}
+
+  .bbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:38;height:calc(var(--bar) + env(safe-area-inset-bottom));padding:0 12px env(safe-area-inset-bottom) 20px;align-items:center;justify-content:space-between;gap:12px;background:var(--bg);border-top:1px solid var(--line)}
+  .bbar .where{display:grid;line-height:1.25;min-width:0}
+  .bbar .where small{font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+  .bbar .where b{font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bbar .btn{min-height:44px;padding:0 20px;font-size:14.5px;flex:none;transition:opacity .3s,background-color .3s,color .3s,border-color .3s}
+  .bbar.at-end .btn{opacity:0;pointer-events:none}
+}
+@media (max-width:760px) and (max-height:620px){ :root{--sh:max(270px,40svh)} .step .lead{font-size:14.5px} }
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .js .rv,.js .step,.stage canvas,.stage .sym,.sheet,.js .hero-film,.js .hero-film video,.band img,.js .viz .dr,.js .viz .fd,.js .viz .gw,.js .viz .gx{transition:none!important}
+  .js .rv{opacity:1;transform:none}
+  .js .hero-film{clip-path:none}
+  .js .hero-film video,.band img{transform:none}
+  .viz .mv{display:none}
+}
+#name dt{min-height:29px}
+</style>
+</head>
+<body data-ground="ivory">
+
+<header class="hdr" id="hdr">
+  <div class="bar">
+    <a class="logo" href="#top" aria-label="NÓIMA, home">
+      <img class="l-d" src="../assets/brand/noima-horizontal-no-tagline-bronze-navy-transparent.svg" alt="NÓIMA" width="176" height="72">
+      <img class="l-n" src="../assets/brand/noima-horizontal-no-tagline-bronze-white-transparent.svg" alt="" aria-hidden="true" width="176" height="72">
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#what">What we do</a>
+      <a href="#how">How we work</a>
+      <a href="#name">Name and symbol</a>
+      <a href="#who">Who we are</a>
+      <a href="#faq">Questions</a>
+      <a class="btn" href="#contact">Get in touch</a>
+      <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="sheet">Menu</button>
+    </nav>
+  </div>
+</header>
+
+<div class="sheet" id="sheet" aria-hidden="true">
+  <ul>
+    <li><a href="#top">Home <span class="gr">α</span></a></li>
+    <li><a href="#what">What we do</a></li>
+    <li><a href="#how">How we work</a></li>
+    <li><a href="#raw">From raw to readable</a></li>
+    <li><a href="#name">Name and symbol</a></li>
+    <li><a href="#who">Who we are</a></li>
+    <li><a href="#faq">Questions</a></li>
+    <li><a href="#contact">Contact <span class="gr">ω</span></a></li>
+  </ul>
+  <div class="bot">
+    <a class="btn" href="mailto:noimadata@gmail.com">Write to us</a>
+    <span>Data · Analytics · Automation<br>Nicosia, Cyprus · London, United Kingdom</span>
+  </div>
+</div>
+
+<main id="top">
+
+<!-- ============ hero ============ -->
+<section class="hero" id="hero" data-ground="ivory" data-name="Home">
+  <div class="hero-copy">
+    <p class="def rv"><span class="gr" lang="el">νόημα</span>Nóima /ˈno.i.ma/ · Greek for “sense”, “meaning”</p>
+    <h1 class="h1 rv" style="--d:1">Make <span class="em">sense</span> of your data.</h1>
+    <p class="lead rv" style="--d:2">We bring your data together, turn it into clear dashboards and automate the work you repeat.</p>
+    <div class="acts rv" style="--d:3">
+      <a class="btn" href="#contact">Start a conversation</a>
+      <a class="btn ghost" href="#what">What we do</a>
+    </div>
+  </div>
+  <div class="hero-film" aria-hidden="true">
+    <video autoplay muted loop playsinline preload="metadata" poster="../assets/img/poster-clock-gears.jpg">
+      <source src="../assets/video/clock-gears-1080.mp4" type="video/mp4">
+    </video>
+  </div>
+</section>
+
+<!-- ============ what we do: scattered data takes shape ============ -->
+<section class="story" id="what" data-ground="ivory" data-name="What we do" aria-label="What we do: from scattered data to meaning">
+  <div class="stage" id="stage">
+    <canvas id="pts" aria-hidden="true"></canvas>
+    <img class="sym" id="sym" src="../assets/brand/noima-symbol-bronze-navy-transparent.svg" alt="" width="400" height="400">
+    <div class="prog" id="prog" role="group" aria-label="Stages of the story">
+      <i id="progFill"></i>
+      <button type="button" class="on" aria-label="Stage 1: scattered data"><b>1</b><span>Scattered</span></button>
+      <button type="button" aria-label="Stage 2: data engineering"><b>2</b><span>Engineering</span></button>
+      <button type="button" aria-label="Stage 3: analytics"><b>3</b><span>Analytics</span></button>
+      <button type="button" aria-label="Stage 4: automation"><b>4</b><span>Automation</span></button>
+      <button type="button" aria-label="Stage 5: meaning"><b>5</b><span>Meaning</span></button>
+    </div>
+  </div>
+
+  <div class="steps" id="steps">
+    <div class="step on">
+      <p class="label">What we do</p>
+      <h2 class="h2">Data engineering, analytics and automation.</h2>
+      <p class="lead">Start with one and add the next when you need it. You can hire us for a single dashboard or for all three.</p>
+    </div>
+    <div class="step">
+      <p class="label">Data engineering</p>
+      <h2 class="h2">All your data in one place.</h2>
+      <p class="lead">We connect your systems, clean the data and keep it in one warehouse that every report and dashboard reads, refreshed on a schedule.</p>
+      <figure class="vizw"><div class="viz" data-viz="eng"></div><figcaption class="cap">Illustrative</figcaption></figure>
+    </div>
+    <div class="step">
+      <p class="label">Analytics</p>
+      <h2 class="h2">Clear dashboards and analysis.</h2>
+      <p class="lead">We turn your data into dashboards and analysis that show how the business is doing and what is behind each figure.</p>
+      <figure class="vizw"><div class="viz" data-viz="ana"></div><figcaption class="cap">Illustrative · sample figures</figcaption></figure>
+    </div>
+    <div class="step">
+      <p class="label">Automation</p>
+      <h2 class="h2">Repeated work, automated.</h2>
+      <p class="lead">We automate the tasks you repeat: generating reports, sending invoices and emails, running the same analysis each week.</p>
+      <figure class="vizw"><div class="viz" data-viz="aut"></div><figcaption class="cap">Illustrative</figcaption></figure>
+    </div>
+    <div class="step">
+      <p class="label">NÓIMA</p>
+      <h2 class="h2">From raw data to meaning, start to finish.</h2>
+      <p class="lead">The symbol is the mechanism that read the sky. The name is the Greek word for meaning. Together they say what we do: find the meaning in your data.</p>
+      <div class="acts"><a class="tlink" href="#name"><u>Our name and symbol</u><span aria-hidden="true">→</span></a></div>
+    </div>
+  </div>
+  <div class="track" id="track" aria-hidden="true"></div>
+</section>
+<div class="probe" id="probe" aria-hidden="true"></div>
+
+<!-- phones only: what each service gives you, with its illustration -->
+<section class="svcs" id="svcs" data-name="What you get">
+  <div class="wrap">
+    <div class="head">
+      <p class="label rv">What you get</p>
+      <h2 class="h2 rv" style="--d:1">Each service, in practice.</h2>
+    </div>
+    <article class="svc">
+      <h3 class="h3 rv">Data engineering</h3>
+      <figure class="vizw rv"><div class="viz" data-viz="eng"></div><figcaption class="cap">Illustrative</figcaption></figure>
+      <ul class="get rv" aria-label="What you get">
+        <li>Pipelines from each of your systems</li>
+        <li>Data cleaned and checked on arrival</li>
+        <li>One warehouse for every report</li>
+      </ul>
+    </article>
+    <article class="svc">
+      <h3 class="h3 rv">Analytics</h3>
+      <figure class="vizw rv"><div class="viz" data-viz="ana"></div><figcaption class="cap">Illustrative · sample figures</figcaption></figure>
+      <ul class="get rv" aria-label="What you get">
+        <li>Dashboards for each team</li>
+        <li>KPIs with one agreed definition</li>
+        <li>Analysis on the questions you ask</li>
+      </ul>
+    </article>
+    <article class="svc">
+      <h3 class="h3 rv">Automation</h3>
+      <figure class="vizw rv"><div class="viz" data-viz="aut"></div><figcaption class="cap">Illustrative</figcaption></figure>
+      <ul class="get rv" aria-label="What you get">
+        <li>Reports generated and sent for you</li>
+        <li>Invoices sent on schedule</li>
+        <li>Alerts when a number moves</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<!-- ============ how we work ============ -->
+<section class="sec full" id="how" data-ground="white" data-name="How we work">
+  <div class="wrap">
+    <div class="head">
+      <p class="label rv">How we work</p>
+      <h2 class="h2 rv" style="--d:1">How a project runs, from <span class="gr">α</span> to <span class="gr">ω</span>.</h2>
+      <p class="lead rv" style="--d:2">We work in short rounds and show you something working after each one.</p>
+    </div>
+    <ol class="hsteps" id="hsteps">
+      <li class="hstep rv"><span class="n gr">α</span><h3 class="h3">Listen</h3><p>You walk us through the reports you rely on and the questions they can’t answer.</p></li>
+      <li class="hstep rv" style="--d:1"><span class="n">2</span><h3 class="h3">Map</h3><p>We go through your systems and spreadsheets and tell you what the data can support today.</p></li>
+      <li class="hstep rv" style="--d:2"><span class="n">3</span><h3 class="h3">Build</h3><p>We build in short rounds, each ending with something you can open and check.</p></li>
+      <li class="hstep rv" style="--d:3"><span class="n gr">ω</span><h3 class="h3">Automate</h3><p>Whatever still gets done by hand each week goes on a schedule, with an alert when it fails.</p></li>
+    </ol>
+    <p class="keep rv">Everything we build stays yours.</p>
+  </div>
+</section>
+
+<!-- ============ from raw to readable ============ -->
+<section class="sec full" id="raw" data-ground="ivory" data-name="From raw to readable">
+  <div class="wrap lens-grid">
+    <div class="lens-text">
+      <p class="label rv">From raw to readable</p>
+      <h2 class="h2 rv" style="--d:1">The same records, before and after.</h2>
+      <p class="t rv" style="--d:2">Every system exports in its own way. We clean the data and give each figure one agreed definition, so the people who use it can read it.</p>
+      <p class="lens-hint rv" style="--d:3"><span class="h-d">Move the lens over the records.</span><span class="h-m">Drag the handle across the records.</span></p>
+    </div>
+    <figure class="lens-fig rv" style="--d:2">
+      <p class="lens-keys"><span class="k-d">Raw export</span><span class="k-d">Inside the lens: readable</span><span class="k-m">Readable</span><span class="k-m">Raw export</span></p>
+      <div class="panel" id="panel" role="img" aria-label="Illustrative example: a list of raw exported records, and the same records cleaned into readable columns">
+        <div class="layer layer--raw" id="rawLayer" aria-hidden="true"></div>
+        <div class="layer layer--clean" id="cleanLayer" aria-hidden="true"></div>
+        <div class="ring" aria-hidden="true">
+          <svg viewBox="0 0 100 100"><path class="arc" d="M57.3 .6A50 50 0 0 1 99.4 42.7"/><path class="arc" d="M99.4 57.3A50 50 0 0 1 57.3 99.4"/><path class="arc" d="M42.7 99.4A50 50 0 0 1 .6 57.3"/><path class="arc" d="M.6 42.7A50 50 0 0 1 42.7 .6"/><circle class="dot" cx="85.36" cy="14.64" r="1.6"/><circle class="dot" cx="85.36" cy="85.36" r="1.6"/><circle class="dot" cx="14.64" cy="85.36" r="1.6"/><circle class="dot" cx="14.64" cy="14.64" r="1.6"/></svg>
+        </div>
+        <div class="wipe" id="wipe" aria-hidden="true"><i></i><i></i></div>
+      </div>
+      <figcaption class="cap">Illustrative · sample records</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ full-bleed image ============ -->
+<section class="band" id="band" data-ground="navy" aria-label="The idea behind the name">
+  <img src="../assets/img/gears-dark.jpg" alt="Brass and steel gears of a clock mechanism, close up" width="2000" height="1333" loading="lazy">
+  <div class="band-panel">
+    <p class="label">The idea</p>
+    <p class="q">More than 2,000 years ago, the Antikythera mechanism found the meaning in the movements of the sky. We find the meaning in your data.</p>
+  </div>
+</section>
+
+<!-- ============ our name and symbol ============ -->
+<section class="sec full" id="name" data-ground="navy" data-name="Name and symbol">
+  <div class="wrap">
+    <div class="head">
+      <p class="label rv">Our name and symbol</p>
+      <h2 class="h2 rv" style="--d:1">A Greek word and the first analogue computer.</h2>
+    </div>
+    <div class="ns3">
+      <div class="rv">
+        <p class="label">The name</p>
+        <div class="fig"><span class="word" lang="el">νόημα</span></div>
+        <p class="t">In Greek, when something makes sense, you say it has <span class="gr" lang="el">νόημα</span>. Every business wants that from its data, so it became our name.</p>
+      </div>
+      <div class="rv" style="--d:1">
+        <p class="label">The symbol</p>
+        <div class="fig"><img class="s" src="../assets/brand/noima-symbol-bronze-white-transparent.svg" alt="The NÓIMA symbol: a gear inside an open dial, with α at the top, ω at the bottom, the Moon on the left and the Sun on the right" width="150" height="150" loading="lazy"></div>
+        <p class="t">The main wheel of the Antikythera mechanism, the first analogue computer, set inside an open dial that runs from <span class="gr">α</span> to <span class="gr">ω</span>.</p>
+      </div>
+      <div class="rv" style="--d:2">
+        <p class="label">The two together</p>
+        <div class="fig"><img class="l" src="../assets/brand/noima-horizontal-no-tagline-bronze-white-transparent.svg" alt="The NÓIMA logo: the symbol beside the name" width="300" height="122" loading="lazy"></div>
+        <p class="t">The mechanism that read the sky and the Greek word for meaning. Together they say what we do: find meaning in your data.</p>
+      </div>
+    </div>
+    <dl class="ns4">
+      <div class="rv"><dt>The gear</dt><dd>The main wheel of the Antikythera mechanism. For us, it is the machinery we build.</dd></div>
+      <div class="rv" style="--d:1"><dt>The dial</dt><dd>The ring around the gear and its four dots. For us, it is where the answer is read.</dd></div>
+      <div class="rv" style="--d:2"><dt><span class="gr">α</span> to <span class="gr">ω</span></dt><dd>The first and last Greek letters. For us, raw data to meaning, start to finish.</dd></div>
+      <div class="rv" style="--d:3"><dt>Moon and Sun</dt><dd>What the mechanism tracked in the sky. For us, it is what you want to know.</dd></div>
+    </dl>
+    <p class="origin rv">Found in a shipwreck off the Greek island of Antikythera in 1901, a bronze mechanism of at least 30 gears predicted eclipses and the movements of the sky more than 2,000 years ago: the first analogue computer.</p>
+  </div>
+</section>
+
+<!-- ============ who we are ============ -->
+<section class="sec full" id="who" data-ground="white" data-name="Who we are">
+  <div class="wrap">
+    <div class="head">
+      <p class="label rv">Who we are</p>
+      <h2 class="h2 rv" style="--d:1">An engineer and an analyst.</h2>
+      <p class="lead rv" style="--d:2">George builds data platforms. Giannis builds the reporting that sits on them. We have 15 years in data between us.</p>
+    </div>
+    <div class="people">
+      <article class="person rv">
+        <p class="role">Co-founder · Data engineering</p>
+        <h3>George Stratis</h3>
+        <p class="job">Data and platform engineer</p>
+        <p>George builds the pipelines and platforms that carry data from source systems to the people who use it.</p>
+        <p>He started as an insight analyst in media, moved into BI development, then spent over three years as a data engineer in broadcasting. Most recently: the platform behind an audience-measurement service.</p>
+        <dl>
+          <div><dt>Focus</dt><dd>Data platforms, pipelines, data quality</dd></div>
+          <div><dt>Based in</dt><dd>London</dd></div>
+          <div><dt>Education</dt><dd>MSc Operations Research &amp; Analytics, LSE<br>BSc Mathematics &amp; Statistics, University of Reading</dd></div>
+        </dl>
+      </article>
+      <article class="person rv" style="--d:1">
+        <p class="role">Co-founder · Analytics</p>
+        <h3>Giannis Zonia</h3>
+        <p class="job">BI developer and Tableau specialist</p>
+        <p>Seven years of Tableau dashboards for a whole games company, from finance to social-media data.</p>
+        <p>Finance, gaming, time-series and social-media data. His tools are Tableau, SQL, Python and Snowflake. He built KPI Card, a Tableau extension, and uses AI in his analytics work. Earlier: Tableau projects for consultancy clients.</p>
+        <dl>
+          <div><dt>Focus</dt><dd>Dashboards, BI, analytics products, AI</dd></div>
+          <div><dt>Based in</dt><dd>Nicosia</dd></div>
+          <div><dt>Education</dt><dd>MSc Business Analytics (Distinction), Queen Mary University of London<br>BSc Information Technology, University of Reading</dd></div>
+        </dl>
+      </article>
+    </div>
+    <div class="why">
+      <h3 class="h3 rv">Why work with us.</h3>
+      <ol>
+        <li class="rv"><b>15 years of experience</b><span>Between us we have 15 years of work in data engineering, analytics and automation.</span></li>
+        <li class="rv" style="--d:1"><b>With you from start to finish</b><span>We guide you through every step, from the first conversation to the finished system.</span></li>
+        <li class="rv"><b>The important questions, the important answers</b><span>We ask what matters to your business and give you answers you can act on.</span></li>
+        <li class="rv" style="--d:1"><b>New tools only when necessary</b><span>We work with what you already have and suggest a new tool only when it is necessary.</span></li>
+        <li class="rv"><b>We stay after the work is done</b><span>When the project is finished, we are still there to maintain it and keep it running.</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ questions ============ -->
+<section class="sec full" id="faq" data-ground="white" data-name="Questions">
+  <div class="wrap faq-grid">
+    <div class="head">
+      <p class="label rv">Questions</p>
+      <h2 class="h2 rv" style="--d:1">Common questions.</h2>
+    </div>
+    <div class="faq rv">
+      <details open><summary>Our data is a mess. Is that a problem?</summary><p>No. Tidying it is part of the job. The first step is working out what your data can support today.</p></details>
+      <details><summary>Do you work with the tools we already have?</summary><p>Yes. We start with what you have, spreadsheets included, and suggest a new tool only when the current one is holding the work back.</p></details>
+      <details><summary>What can you automate?</summary><p>Whatever your team does by hand on a schedule: sending invoices, building reports, running an analysis, sending emails.</p></details>
+      <details><summary>How do we start?</summary><p>Email us to arrange a meeting. Tell us in a line or two what you want to fix, and we’ll set up a call, in English or Greek.</p></details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ contact: the symbol arrives and becomes the logo ============ -->
+<section class="contact" id="contact" data-ground="navy" data-name="Contact">
+  <div class="wrap">
+    <div class="grid">
+      <div class="txt">
+        <p class="label rv">Let’s talk</p>
+        <h2 class="h2 rv" style="--d:1">Let’s find the <span class="em">meaning</span> in your data.</h2>
+        <p class="lead rv" style="--d:2">Tell us what you want from your data. We’ll reply with how we’d do it and roughly what it would take.</p>
+        <a class="mail rv" style="--d:2" href="mailto:noimadata@gmail.com">noimadata@gmail.com</a>
+        <div class="acts rv" style="--d:3">
+          <a class="btn" href="mailto:noimadata@gmail.com">Write to us</a>
+          <button class="btn ghost" type="button" id="copy" data-mail="noimadata@gmail.com">Copy the address</button>
+        </div>
+        <div class="side rv" style="--d:3">
+          <p><b>Based in</b><br>Nicosia, Cyprus<br>London, United Kingdom</p>
+          <p><b>Languages</b><br>We work in English and Greek, in both countries and beyond.</p>
+        </div>
+      </div>
+      <div class="closing">
+        <img class="close-logo" id="closeLogo" src="../assets/brand/noima-stacked-bronze-white-transparent.svg" alt="NÓIMA · Data · Analytics · Automation" width="310" height="332">
+      </div>
+    </div>
+  </div>
+</section>
+<img class="fly" id="fly" src="../assets/brand/noima-symbol-bronze-white-transparent.svg" alt="" aria-hidden="true" width="100" height="100">
+<footer class="ftr" data-ground="navy">
+  <div class="wrap in">
+    <nav aria-label="Footer">
+      <a href="#what">What we do</a><a href="#how">How we work</a><a href="#name">Name and symbol</a><a href="#who">Who we are</a><a href="#faq">Questions</a>
+    </nav>
+    <div class="small">
+      <span>© 2026 NÓIMA · Nicosia, Cyprus · London, United Kingdom</span>
+      <span><a href="../index.html">All directions</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="bbar" id="bbar">
+  <div class="where"><small>You are in</small><b id="whereName">Home</b></div>
+  <a class="btn" href="#contact">Get in touch</a>
+</div>
+
+<script>
+/* ---------- page behaviours ---------- */
+(function(){
+  var doc = document.documentElement, body = document.body;
+  var hdr = document.getElementById('hdr');
+  var mqR = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var mqPhone = window.matchMedia('(max-width:760px)');
+  var reduce = mqR.matches;
+  function $(s, c){ return (c || document).querySelector(s); }
+  function $$(s, c){ return [].slice.call((c || document).querySelectorAll(s)); }
+  function clamp(v, a, b){ return v < a ? a : v > b ? b : v; }
+
+  /* ---- illustration panels (one template each, used on desktop steps and in the phone list) ---- */
+  var P1 = 'M70 26 C150 26 170 90 246 90', P2 = 'M70 68 C140 68 170 90 246 90', P3 = 'M70 112 C140 112 170 90 246 90', P4 = 'M70 154 C150 154 170 90 246 90';
+  function flow(d, i){
+    return '<path class="st dr" pathLength="1" style="--i:' + i + '" d="' + d + '"/>' +
+           '<circle class="mv fd" style="--i:' + (i + 5) + '" r="3"><animateMotion dur="2.6s" begin="' + (i * 0.5) + 's" repeatCount="indefinite" path="' + d + '"/></circle>';
+  }
+  function src(y, label, i){
+    return '<circle class="nd fd" style="--i:' + i + '" cx="62" cy="' + y + '" r="6"/><text class="fd" style="--i:' + i + '" x="48" y="' + (y + 4) + '" text-anchor="end">' + label + '</text>';
+  }
+  var bars = [38,46,42,55,51,63,60,72,68,84,100,90], barsH = '', pts = [], bi;
+  for(bi = 0; bi < 12; bi++){
+    var bh = Math.round(bars[bi] * 0.92), bx = 8 + bi * 31.4;
+    barsH += '<rect class="bar gw' + (bi === 10 ? ' pk' : '') + '" style="--i:' + bi + '" x="' + bx.toFixed(1) + '" y="' + (108 - bh) + '" width="20" height="' + bh + '" rx="1"/>';
+  }
+  var nodes = [[48,'Report'],[144,'Invoices'],[240,'Analysis'],[336,'Alert']], autH = '';
+  nodes.forEach(function(n, i){
+    autH += '<circle class="nd fd" style="--i:' + (i * 3) + '" cx="' + n[0] + '" cy="70" r="14"/>' +
+            '<path class="sb dr" pathLength="1" style="--i:' + (i * 3 + 3) + '" d="M' + (n[0] - 6) + ' 70 l4.5 4.5 l8 -9"/>' +
+            '<text class="fd" style="--i:' + (i * 3) + '" x="' + n[0] + '" y="38" text-anchor="middle">' + n[1] + '</text>';
+  });
+  var TPL = {
+    eng:
+      '<svg viewBox="0 0 384 180" role="img" aria-label="Illustration: four sources flow into one warehouse">' +
+      flow(P1, 0) + flow(P2, 1) + flow(P3, 2) + flow(P4, 3) +
+      src(26, 'CRM', 0) + src(68, 'Shop', 1) + src(112, 'Accounts', 2) + src(154, 'Sheets', 3) +
+      '<rect class="sb dr" pathLength="1" style="--i:4" x="252" y="50" width="108" height="80" rx="2"/>' +
+      '<rect class="row gx" style="--i:6" x="264" y="64" width="84" height="5"/><rect class="row gx" style="--i:7" x="264" y="79" width="84" height="5"/>' +
+      '<rect class="row gx" style="--i:8" x="264" y="94" width="84" height="5"/><rect class="row gx" style="--i:9" x="264" y="109" width="60" height="5"/>' +
+      '<text class="fd" style="--i:6" x="306" y="152" text-anchor="middle">One warehouse</text></svg>',
+    ana:
+      '<div class="ktop"><small>Revenue · this month</small><strong data-count="248300" data-prefix="€">€248,300</strong></div>' +
+      '<svg viewBox="0 0 384 116" role="img" aria-label="Illustration: twelve monthly bars rising, the highest marked">' +
+      barsH + '<path class="st" d="M4 108.5 H380"/></svg>',
+    aut:
+      '<svg viewBox="0 0 384 150" role="img" aria-label="Illustration: four scheduled tasks completing one after another, then starting again">' +
+      '<path class="st dr" pathLength="1" style="--i:0" d="M62 70 H130 M158 70 H226 M254 70 H322"/>' +
+      '<path class="st dash fd" style="--i:12" d="M336 90 C336 142 48 142 48 90"/>' +
+      '<path class="st fd" style="--i:12" d="M43 98 L48 89 L54 98"/>' +
+      autH +
+      '<circle class="mv fd" style="--i:13" r="3.2"><animateMotion dur="5s" repeatCount="indefinite" path="M336 90 C336 142 48 142 48 90"/></circle></svg>'
+  };
+  $$('[data-viz]').forEach(function(el){ el.innerHTML = TPL[el.getAttribute('data-viz')] || ''; });
+
+  /* count-up, only inside the illustrative dashboard */
+  function count(el){
+    var to = +el.getAttribute('data-count'), pre = el.getAttribute('data-prefix') || '';
+    if(reduce){ el.textContent = pre + to.toLocaleString('en-GB'); return; }
+    var t0 = 0, dur = 1300, id = (el._c = (el._c || 0) + 1);
+    function tick(t){
+      if(el._c !== id) return;
+      if(!t0) t0 = t;
+      var k = Math.min(1, (t - t0) / dur); k = 1 - Math.pow(1 - k, 3);
+      el.textContent = pre + Math.round(to * k).toLocaleString('en-GB');
+      if(k < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  function play(viz, on){
+    if(!viz || viz.classList.contains('play') === on) return;
+    viz.classList.toggle('play', on);
+    if(on){ var c = $('[data-count]', viz); if(c) count(c); }
+  }
+  /* the dot stage calls this when its active step changes */
+  var stepViz = $$('#steps .step').map(function(s){ return $('.viz', s); });
+  window.NOIMA_step = function(idx){ stepViz.forEach(function(v, i){ play(v, i === idx); }); };
+
+  /* ---- menu ---- */
+  var btn = document.getElementById('menuBtn'), sheet = document.getElementById('sheet');
+  function setMenu(open){
+    sheet.classList.toggle('open', open);
+    sheet.setAttribute('aria-hidden', open ? 'false' : 'true');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.textContent = open ? 'Close' : 'Menu';
+    doc.classList.toggle('locked', open);
+  }
+  btn.addEventListener('click', function(){ setMenu(btn.getAttribute('aria-expanded') !== 'true'); });
+  sheet.addEventListener('click', function(e){ if(e.target.closest('a')) setMenu(false); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true'){ setMenu(false); btn.focus(); } });
+  window.addEventListener('resize', function(){ if(window.innerWidth > 1100) setMenu(false); });
+
+  /* ---- grounds: one page colour, blended with scroll position ---- */
+  var LIGHT = {ink:[8,24,46,1], ink2:[70,83,103,1], ink3:[102,114,138,1], line:[8,24,46,.14], lineS:[8,24,46,.32], acc:[168,130,80,1]};
+  var PAL = {
+    ivory:{bg:[247,243,234,1]}, white:{bg:[255,255,255,1]},
+    navy:{bg:[8,24,46,1], ink:[247,243,234,1], ink2:[180,189,203,1], ink3:[151,162,180,1], line:[247,243,234,.18], lineS:[247,243,234,.4], acc:[201,161,108,1]}
+  };
+  var KEYS = ['bg','ink','ink2','ink3','line','lineS','acc'], VARS = ['--bg','--ink','--ink2','--ink3','--line','--line-s','--accent'];
+  ['ivory','white'].forEach(function(g){ KEYS.forEach(function(k){ if(!PAL[g][k]) PAL[g][k] = LIGHT[k]; }); });
+  var grounds = $$('[data-ground]').filter(function(el){ return el !== body; });
+  var lastTheme = '', lastState = '';
+  window.NOIMA_theme = {ink:'rgb(8,24,46)', acc:'rgb(168,130,80)'};
+  function css(c){ return 'rgba(' + Math.round(c[0]) + ',' + Math.round(c[1]) + ',' + Math.round(c[2]) + ',' + (Math.round(c[3] * 1000) / 1000) + ')'; }
+  /* light-to-light boundaries blend with scroll; any boundary touching navy switches with a short timed fade,
+     so the page is never parked on a grey midpoint */
+  var mixV = [], themeBusy = false, themeT = 0, FADE = 550;
+  function easeIO(v){ return v < 0.5 ? 2 * v * v : 1 - Math.pow(-2 * v + 2, 2) / 2; }
+  function theme(now){
+    var vh = window.innerHeight, g0 = grounds[0].getAttribute('data-ground'), state = g0, prev = g0, i, k, t, g, top, target, v;
+    var dt = now - themeT; themeT = now; if(!(dt > 0) || dt > 60) dt = 16;
+    themeBusy = false;
+    var cur = {}; KEYS.forEach(function(key){ cur[key] = PAL[g0][key].slice(); });
+    for(i = 1; i < grounds.length; i++){
+      g = grounds[i].getAttribute('data-ground');
+      if(g === prev) continue;
+      top = grounds[i].getBoundingClientRect().top;
+      if(g === 'navy' || prev === 'navy'){
+        target = top < 0.5 * vh ? 1 : 0;
+        v = mixV[i];
+        if(v === undefined || reduce) v = target;
+        else if(v < target) v = Math.min(target, v + dt / FADE);
+        else if(v > target) v = Math.max(target, v - dt / FADE);
+        mixV[i] = v;
+        if(v !== target) themeBusy = true;
+        t = easeIO(v);
+      } else {
+        t = clamp((0.70 * vh - top) / (0.40 * vh), 0, 1);
+      }
+      if(t > 0){
+        for(k = 0; k < KEYS.length; k++){
+          var a = cur[KEYS[k]], b = PAL[g][KEYS[k]];
+          cur[KEYS[k]] = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t, a[3] + (b[3] - a[3]) * t];
+        }
+        if(t > 0.5) state = g;
+      }
+      prev = g;
+    }
+    var out = KEYS.map(function(key){ return css(cur[key]); }), sig = out.join('|');
+    if(sig !== lastTheme){
+      lastTheme = sig;
+      for(k = 0; k < VARS.length; k++) doc.style.setProperty(VARS[k], out[k]);
+      window.NOIMA_theme.ink = out[1]; window.NOIMA_theme.acc = out[6];
+    }
+    if(state !== lastState){ lastState = state; body.setAttribute('data-ground', state); }
+  }
+
+  /* ---- reveal: position-based, so nothing stays hidden when a section is jumped to ---- */
+  var pending = $$('.rv');
+  function show(el){
+    el.classList.add('in');
+    var v = el.querySelector('.viz'); if(v) play(v, true);
+  }
+  function sweep(){
+    var vh = window.innerHeight;
+    pending = pending.filter(function(el){
+      if(el.offsetParent === null) return true;
+      if(el.getBoundingClientRect().top < vh * 0.9){ show(el); return false; }
+      return true;
+    });
+  }
+
+  /* ---- bottom bar (phones): which section the reader is in ---- */
+  var secs = $$('[data-name]'), where = document.getElementById('whereName'), bbar = document.getElementById('bbar'), lastName = '';
+  function locate(){
+    var name = 'Home', mid = window.innerHeight * 0.5, i;
+    for(i = 0; i < secs.length; i++){ if(secs[i].offsetParent !== null && secs[i].getBoundingClientRect().top <= mid) name = secs[i].getAttribute('data-name'); }
+    if(name !== lastName){ lastName = name; where.textContent = name; bbar.classList.toggle('at-end', name === 'Contact'); }
+  }
+
+  /* ---- how we work: the line draws with scroll, discs fill as it passes ---- */
+  var hsteps = document.getElementById('hsteps'), hEls = $$('.hstep', hsteps), lastP = -1;
+  function howLine(){
+    var r = hsteps.getBoundingClientRect(), vh = window.innerHeight, p;
+    if(mqPhone.matches) p = clamp((vh * 0.7 - r.top) / Math.max(1, r.height), 0, 1);
+    else p = clamp((vh * 0.82 - r.top) / (vh * 0.45), 0, 1);
+    p = Math.round(p * 200) / 200;
+    if(p === lastP) return; lastP = p;
+    hsteps.style.setProperty('--p', p);
+    hEls.forEach(function(el, i){ el.classList.toggle('done', p >= i / hEls.length + 0.02 || p >= 1); });
+  }
+
+  /* ---- image band ---- */
+  var band = document.getElementById('band');
+  function bandIn(){ if(!band.classList.contains('in') && band.getBoundingClientRect().top < window.innerHeight * 0.85) band.classList.add('in'); }
+
+  /* ---- closing: the symbol travels in and becomes the stacked logo ---- */
+  var contact = document.getElementById('contact'), closeLogo = document.getElementById('closeLogo'), fly = document.getElementById('fly'), closed = false;
+  function closing(){
+    var vh = window.innerHeight, vw = doc.clientWidth, top = contact.getBoundingClientRect().top;
+    if(top > vh * 1.1){ if(fly.classList.contains('live')) fly.classList.remove('live'); if(closed){ closed = false; body.classList.remove('closed'); } return; }
+    var hh = hdr.offsetHeight, p = clamp((vh * 0.8 - top) / Math.max(1, vh * 0.8 - hh - 8), 0, 1);
+    var e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+    var r = closeLogo.getBoundingClientRect();
+    /* where the symbol sits inside the official stacked logo (read from the file's viewBox) */
+    var es = r.width * 0.5847, ex = r.left + r.width * 0.2077, ey = r.top + r.height * 0.0633;
+    var ss = Math.min(vw, vh) * 0.7, sx = vw + 24, sy = vh * 0.5 - ss * 0.5;
+    var s = ss + (es - ss) * e, x = sx + (ex - sx) * e, y = sy + (ey - sy) * e;
+    fly.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) scale(' + (s / 100).toFixed(4) + ')';
+    fly.style.setProperty('--o', clamp((p - 0.12) / 0.25, 0, 1).toFixed(3));
+    if(!fly.classList.contains('live')) fly.classList.add('live');
+    var now = p >= 0.995;
+    if(now !== closed){ closed = now; body.classList.toggle('closed', closed); }
+  }
+
+  var tick = 0;
+  function frame(now){
+    tick = 0;
+    hdr.classList.toggle('scrolled', window.scrollY > 8);
+    theme(now || performance.now());
+    if(pending.length) sweep();
+    locate(); howLine(); bandIn(); closing();
+    if(themeBusy && !tick) tick = requestAnimationFrame(frame);   /* keep going until the fade settles */
+  }
+  function onScroll(){ if(!tick) tick = requestAnimationFrame(frame); }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  window.addEventListener('load', onScroll);
+  frame();
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ document.getElementById('hero').classList.add('loaded'); }); });
+
+  /* ---- lens data ---- */
+  var regions = [['N','north','NORTH ','North'],['S','south ','Sth','South'],['E','east','EAST','East'],['W','west','WEST','West']];
+  var statuses = [['PAID','paid','Paid ','Paid'],['SENT','sent','snt','Sent'],['DUE','due ','Due','Due']];
+  var months = ['Jan','Feb','Mar'];
+  var seed = 7; function rnd(){ seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+  var rawH = '', cleanH = '';
+  for(var i = 0; i < 14; i++){
+    var id = 10482 + i, d = 1 + Math.floor(rnd() * 27), m = Math.floor(rnd() * 3), rg = regions[Math.floor(rnd() * 4)], st = statuses[Math.floor(rnd() * 3)];
+    var amt = (40 + rnd() * 420), a2 = amt.toFixed(2), k = i % 4, dd = ('0' + d).slice(-2), mm = '0' + (m + 1);
+    var rawDate = [dd + '/' + mm + '/2026', '2026-' + mm + '-' + dd, d + '.' + (m + 1) + '.26', mm + '-' + dd + '-2026'][k];
+    var rawAmt = [a2.replace('.', ','), a2, '€' + a2, 'EUR ' + a2.replace('.', ',')][(k + 1) % 4];
+    var sep = [';',';','|',';'][k];
+    rawH += '<div class="row">' + ['ord_' + id, rawDate, rg[k % 3], rawAmt, st[(k + 2) % 3], '', k % 2 ? 'NULL' : ''].join(sep) + '</div>';
+    cleanH += '<div class="row"><span>' + id + '</span><span>' + d + ' ' + months[m] + '</span><span>' + rg[3] + '</span><span>€' + a2 + '</span><span>' + st[3] + '</span></div>';
+  }
+  $('#rawLayer').innerHTML = rawH; $('#cleanLayer').innerHTML = cleanH;
+
+  /* ---- lens (wide) and wipe (phone) ---- */
+  var panel = $('#panel'), inView = false, raf = 0;
+  var cur = {x:.5, y:.5}, tgt = {x:.5, y:.5}, lastMove = -1e9, hover = false, t0 = performance.now();
+  var wx = .5, dragging = false, swept = false, sweeping = false;
+  function setLens(){ var w = panel.clientWidth, h = panel.clientHeight; panel.style.setProperty('--lx', (cur.x * w).toFixed(1) + 'px'); panel.style.setProperty('--ly', (cur.y * h).toFixed(1) + 'px'); }
+  function setWipe(){ panel.style.setProperty('--wx', (wx * 100).toFixed(2) + '%'); }
+  function lensTick(now){
+    raf = 0;
+    if(!inView || mqPhone.matches) return;
+    if(!hover && now - lastMove > 1400 && !reduce){
+      var t = (now - t0) / 1000;
+      tgt.x = .5 + .3 * Math.sin(t * .42); tgt.y = .5 + .26 * Math.sin(t * .63 + 1.1);
+    }
+    cur.x += (tgt.x - cur.x) * .12; cur.y += (tgt.y - cur.y) * .12;
+    setLens();
+    raf = requestAnimationFrame(lensTick);
+  }
+  function start(){ if(!raf && inView && !mqPhone.matches) raf = requestAnimationFrame(lensTick); }
+  function rel(e){ var b = panel.getBoundingClientRect(); return {x:clamp((e.clientX - b.left) / b.width, 0, 1), y:clamp((e.clientY - b.top) / b.height, 0, 1)}; }
+  panel.addEventListener('pointerdown', function(e){
+    if(mqPhone.matches){ dragging = true; sweeping = false; try{ panel.setPointerCapture(e.pointerId); }catch(_){}
+      wx = clamp(rel(e).x, .06, .94); setWipe(); }
+    else { tgt = rel(e); hover = true; lastMove = performance.now(); start(); }
+  });
+  panel.addEventListener('pointermove', function(e){
+    if(mqPhone.matches){ if(dragging){ wx = clamp(rel(e).x, .06, .94); setWipe(); } }
+    else { tgt = rel(e); hover = true; lastMove = performance.now(); start(); }
+  });
+  function endDrag(){ dragging = false; hover = false; }
+  panel.addEventListener('pointerup', endDrag); panel.addEventListener('pointercancel', endDrag); panel.addEventListener('pointerleave', function(){ hover = false; });
+  function wipeSweep(){
+    if(swept || reduce) return; swept = true; sweeping = true;
+    var s = performance.now(), keys = [.5,.86,.18,.5], dur = 2600;
+    (function step(now){
+      if(!sweeping) return;
+      var p = Math.min(1, (now - s) / dur), seg = Math.min(2, Math.floor(p * 3)), q = p * 3 - seg;
+      q = q < .5 ? 2 * q * q : 1 - Math.pow(-2 * q + 2, 2) / 2;
+      wx = keys[seg] + (keys[seg + 1] - keys[seg]) * q; setWipe();
+      if(p < 1) requestAnimationFrame(step); else sweeping = false;
+    })(s);
+  }
+  setLens(); setWipe();
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(en){
+      inView = en[0].isIntersecting;
+      if(inView){ if(mqPhone.matches) wipeSweep(); else start(); }
+    }, {threshold:.35}).observe(panel);
+  } else { inView = true; start(); }
+  window.addEventListener('resize', function(){ setLens(); start(); });
+
+  /* ---- copy the address ---- */
+  var copy = document.getElementById('copy');
+  copy.addEventListener('click', function(){
+    var mail = copy.getAttribute('data-mail');
+    function done(){ copy.textContent = 'Address copied'; setTimeout(function(){ copy.textContent = 'Copy the address'; }, 2200); }
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(mail).then(done, function(){ window.prompt('Copy the address', mail); }); }
+    else { window.prompt('Copy the address', mail); }
+  });
+  var onMq = function(){ reduce = mqR.matches; };
+  if(mqR.addEventListener) mqR.addEventListener('change', onMq);
+})();
+
+/* ---------- the point stage (engine ported from the Signal sample) ---------- */
+(function(){
+  var story = document.getElementById('what'), stage = document.getElementById('stage'),
+      cv = document.getElementById('pts'), sym = document.getElementById('sym'),
+      probe = document.getElementById('probe'), track = document.getElementById('track'), fill = document.getElementById('progFill');
+  if(!story || !cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d'); if(!ctx) return;
+  var steps = [].slice.call(story.querySelectorAll('.step')),
+      pills = [].slice.call(story.querySelectorAll('.prog button'));
+
+  var mqPhone = window.matchMedia('(max-width:760px)'),
+      mqR = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var reduce = mqR.matches;
+
+  var T = window.NOIMA_theme || {ink:'#08182E', acc:'#A88250'};
+  /* states: 0 scattered · 1 ordered rows · 2 line chart · 3 a loop that runs by itself · 4 the symbol */
+  var NS = 5, LAST = NS - 1;
+  var KEYS = [[0,0],[0.3,0],[0.78,1],[1.3,1],[1.78,2],[2.3,2],[2.78,3],[3.3,3],[3.8,4]];
+
+  var N = 0, W = 0, H = 0, dpr = 1, phone = false, top0 = 0, stepH = 1;
+  var rnd, X = [], Y = [], AL = [], HL = [], size, px, py, pa, ph, bx, by, isLoop, loopU, loopO;
+  var LP = {cx:0, cy:0, L:0, r:0, P:1};
+  var running = false, raf = 0, curIdx = -1, burst = -1e9, lastFill = -1, _x = 0, _y = 0;
+
+  function clamp(v, a, b){ return v < a ? a : v > b ? b : v; }
+  function ease(t){ return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2; }
+  function frac(v){ return v - Math.floor(v); }
+  function rng(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+  function alloc(n){
+    N = n;
+    var r = rng(20261121), i, s;
+    rnd = new Float32Array(N * 8);
+    for(i = 0; i < N * 8; i++) rnd[i] = r();
+    X = []; Y = []; AL = []; HL = [];
+    for(s = 0; s < NS; s++){ X.push(new Float32Array(N)); Y.push(new Float32Array(N)); AL.push(new Float32Array(N)); HL.push(new Uint8Array(N)); }
+    size = new Float32Array(N); px = new Float32Array(N); py = new Float32Array(N); pa = new Float32Array(N); ph = new Uint8Array(N);
+    bx = new Float32Array(N); by = new Float32Array(N);
+    isLoop = new Uint8Array(N); loopU = new Float32Array(N); loopO = new Float32Array(N);
+  }
+
+  function loopPt(u, off){
+    var L = LP.L, r = LP.r + off, d = frac(u) * LP.P, a;
+    if(d < 2 * L){ _x = LP.cx - L + d; _y = LP.cy - r; return; }
+    d -= 2 * L;
+    if(d < Math.PI * LP.r){ a = -Math.PI / 2 + d / LP.r; _x = LP.cx + L + r * Math.cos(a); _y = LP.cy + r * Math.sin(a); return; }
+    d -= Math.PI * LP.r;
+    if(d < 2 * L){ _x = LP.cx + L - d; _y = LP.cy + r; return; }
+    d -= 2 * L;
+    a = Math.PI / 2 + d / LP.r; _x = LP.cx - L + r * Math.cos(a); _y = LP.cy + r * Math.sin(a);
+  }
+
+  function build(){
+    phone = mqPhone.matches;
+    W = Math.max(1, stage.clientWidth); H = Math.max(1, stage.clientHeight);
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+
+    /* scroll geometry, cached: no layout reads while drawing */
+    if(phone){
+      stepH = Math.round((probe.offsetHeight || window.innerHeight) * 0.8);
+      track.style.height = Math.round((LAST + 0.7) * stepH) + 'px';
+    } else {
+      track.style.height = '';
+      stepH = steps[0].offsetHeight || window.innerHeight;
+    }
+    top0 = story.getBoundingClientRect().top + window.scrollY;
+
+    var n = phone ? 168 : W < 520 ? 340 : 520;
+    if(n !== N) alloc(n);
+
+    var hdrH = phone ? 0 : 72;
+    var R = phone
+      ? {x0:26, x1:W - 26, y0:18, y1:H - 62}
+      : {x0:W * 0.1, x1:W * 0.9, y0:hdrH + Math.max(36, H * 0.07), y1:H - 110};
+    var Rw = Math.max(40, R.x1 - R.x0), Rh = Math.max(40, R.y1 - R.y0);
+    var cx = (R.x0 + R.x1) / 2, cy = (R.y0 + R.y1) / 2;
+    var i, k, b, c, r, s;
+
+    for(i = 0; i < N; i++){
+      size[i] = (phone ? 1.5 : 1.45) + rnd[i*8 + 4] * 1.0;
+      for(s = 0; s < NS; s++) HL[s][i] = 0;
+      var ba = rnd[i*8 + 6] * 6.2832, bm = (phone ? 26 : 46) * (0.35 + rnd[i*8 + 7]);
+      bx[i] = Math.cos(ba) * bm; by[i] = Math.sin(ba) * bm;
+      isLoop[i] = 0;
+    }
+
+    /* 0 · scattered: your data, wherever it lives */
+    for(i = 0; i < N; i++){
+      X[0][i] = R.x0 - 8 + rnd[i*8] * (Rw + 16);
+      Y[0][i] = R.y0 - 8 + rnd[i*8 + 1] * (Rh + 16);
+      AL[0][i] = 0.34 + 0.56 * rnd[i*8 + 4];
+      if(i % 19 === 7){ HL[0][i] = 1; }
+    }
+
+    /* 1 · ordered rows: one table, a header row on top */
+    var cols = Math.max(6, Math.round(Math.sqrt(N * Rw / Rh) * 0.94)), rows = Math.ceil(N / cols);
+    var gs = Math.max(3, Math.round(cols / 4)), ngap = Math.floor((cols - 1) / gs), GAP = 0.9, HEAD = 0.7;
+    var sp = Math.min(Rw / (cols - 1 + ngap * GAP), Rh / (rows - 1 + HEAD));
+    var ox = cx - (cols - 1 + ngap * GAP) * sp / 2, oy = cy - (rows - 1 + HEAD) * sp / 2;
+    for(i = 0; i < N; i++){
+      c = Math.floor(i / rows); r = i % rows;
+      X[1][i] = ox + (c + Math.floor(c / gs) * GAP) * sp;
+      Y[1][i] = oy + (r + (r > 0 ? HEAD : 0)) * sp;
+      AL[1][i] = r === 0 ? 1 : 0.62;
+      if(r === 0) HL[1][i] = 1;
+    }
+
+    /* 2 · a line chart: one rising trend line over a soft area, the last stretch marked in bronze */
+    var KN = [[0,.14],[.13,.3],[.25,.23],[.39,.46],[.51,.39],[.65,.62],[.77,.55],[.9,.8],[1,.95]], NK = KN.length;
+    function lineV(xn){
+      var kk = 0; while(kk < NK - 2 && xn > KN[kk + 1][0]) kk++;
+      var ff = (xn - KN[kk][0]) / (KN[kk + 1][0] - KN[kk][0]);
+      return KN[kk][1] + (KN[kk + 1][1] - KN[kk][1]) * clamp(ff, 0, 1);
+    }
+    var segL = [], LT = 0, dxp, dyp;
+    for(k = 0; k < NK - 1; k++){
+      dxp = (KN[k + 1][0] - KN[k][0]) * Rw; dyp = (KN[k + 1][1] - KN[k][1]) * Rh;
+      segL[k] = Math.sqrt(dxp * dxp + dyp * dyp); LT += segL[k];
+    }
+    var lanes = phone ? 2 : 3, laneOff = phone ? 2.3 : 3.1;
+    var nEnd = Math.max(4, Math.round(N * 0.03)), nLine = Math.round(N * 0.5), nAxis = Math.round(N * 0.09), nArea = N - nLine - nEnd - nAxis;
+    var per = Math.ceil(nLine / lanes), m2, ln2, dd, ff2, off2, sl;
+    i = 0;
+    for(m2 = 0; m2 < nLine; m2++, i++){            /* the line, a few points thick */
+      ln2 = m2 % lanes;
+      dd = Math.min(0.9999, (Math.floor(m2 / lanes) + ln2 / lanes) / per) * LT;
+      k = 0; while(k < NK - 2 && dd > segL[k]){ dd -= segL[k]; k++; }
+      sl = Math.max(1, segL[k]); ff2 = clamp(dd / sl, 0, 1);
+      dxp = (KN[k + 1][0] - KN[k][0]) * Rw; dyp = -(KN[k + 1][1] - KN[k][1]) * Rh;
+      off2 = (ln2 - (lanes - 1) / 2) * laneOff;
+      X[2][i] = R.x0 + KN[k][0] * Rw + dxp * ff2 - dyp / sl * off2;
+      Y[2][i] = R.y1 - KN[k][1] * Rh + dyp * ff2 + dxp / sl * off2;
+      AL[2][i] = 1;
+      if(k === NK - 2) HL[2][i] = 1;
+    }
+    var er = phone ? 5.5 : 9;
+    for(m2 = 0; m2 < nEnd; m2++, i++){             /* the latest value, marked */
+      var erad = er * Math.sqrt((m2 + 0.5) / nEnd), eang = m2 * 2.39996;
+      X[2][i] = R.x1 + erad * Math.cos(eang); Y[2][i] = R.y1 - KN[NK - 1][1] * Rh + erad * Math.sin(eang);
+      AL[2][i] = 1; HL[2][i] = 1;
+    }
+    for(m2 = 0; m2 < nAxis; m2++, i++){            /* a faint baseline */
+      X[2][i] = R.x0 + Rw * m2 / Math.max(1, nAxis - 1); Y[2][i] = R.y1 + (phone ? 7 : 11);
+      AL[2][i] = 0.55;
+    }
+    var gapA = phone ? 12 : 20, meanH = 0, C, cA, hA = [], sumA = 0, cntA = [], totA = 0;
+    for(k = 0; k < 40; k++) meanH += Math.max(0, lineV((k + 0.5) / 40) * Rh - gapA) / 40;
+    C = Math.max(4, Math.round(Rw / Math.max(4, Math.sqrt(meanH * Rw / Math.max(1, nArea)))));
+    for(cA = 0; cA < C; cA++){ hA[cA] = Math.max(1, lineV((cA + 0.5) / C) * Rh - gapA); sumA += hA[cA]; }
+    for(cA = 0; cA < C; cA++){ cntA[cA] = Math.floor(hA[cA] / sumA * nArea); totA += cntA[cA]; }
+    cA = C - 1; while(totA < nArea){ cntA[((cA % C) + C) % C]++; totA++; cA--; }
+    for(cA = 0; cA < C && i < N; cA++){            /* a soft area under the line */
+      for(k = 0; k < cntA[cA] && i < N; k++, i++){
+        X[2][i] = R.x0 + (cA + 0.5) * Rw / C;
+        Y[2][i] = R.y1 - (k + 0.6) * hA[cA] / cntA[cA];
+        AL[2][i] = 0.24 + 0.12 * rnd[i*8 + 4];
+      }
+    }
+    for(; i < N; i++){ X[2][i] = R.x1; Y[2][i] = R.y1 - KN[NK - 1][1] * Rh; AL[2][i] = 1; HL[2][i] = 1; }
+
+    /* 3 · a loop that runs by itself, with four stops along it */
+    LP.r = Math.min(Rh * 0.3, Rw * 0.24); LP.L = Math.max(10, Rw / 2 - LP.r - 6); LP.cx = cx; LP.cy = cy;
+    LP.P = 4 * LP.L + 2 * Math.PI * LP.r;
+    var nStop = Math.round(N * 0.07), stops = [0.5 * LP.L / LP.P, 1.5 * LP.L / LP.P, 0, 0], sr = phone ? 8 : 12;
+    stops[2] = (2 * LP.L + Math.PI * LP.r + 0.5 * LP.L) / LP.P; stops[3] = (2 * LP.L + Math.PI * LP.r + 1.5 * LP.L) / LP.P;
+    var nLoop = N - 4 * nStop, li = 0;
+    for(i = 0; i < N; i++){
+      if(i < 4 * nStop){
+        k = Math.floor(i / nStop);
+        loopPt(stops[k], 0);
+        var q = (i % nStop), rad = sr * Math.sqrt((q + 0.5) / nStop), ang = q * 2.39996;
+        X[3][i] = _x + rad * Math.cos(ang); Y[3][i] = _y + rad * Math.sin(ang);
+        AL[3][i] = 1;
+      } else {
+        isLoop[i] = 1; loopU[i] = li / nLoop; loopO[i] = (li % 3 - 1) * (phone ? 2.2 : 3);
+        loopPt(loopU[i], loopO[i]); X[3][i] = _x; Y[3][i] = _y;
+        AL[3][i] = 0.6;
+        if(li % 13 === 0){ HL[3][i] = 1; }
+        li++;
+      }
+    }
+
+    /* 4 · the symbol: an open dial around the main wheel (geometry read from the official file, 108-unit box) */
+    var sc = Math.min(Rw, Rh, 520) / 108;
+    function U(ux, uy, idx, hl, al){ X[4][idx] = cx + (ux - 50) * sc; Y[4][idx] = cy + (uy - 50) * sc; HL[4][idx] = hl; AL[4][idx] = al; }
+    var nRing = Math.round(N * 0.30), nDots = Math.round(N * 0.08), nMark = Math.round(N * 0.08),
+        nRim = Math.round(N * 0.29), nSpoke = Math.round(N * 0.19), nHub = N - nRing - nDots - nMark - nRim - nSpoke;
+    var DEG = Math.PI / 180, j = 0, m, f, a2, rr;
+    for(m = 0; m < nRing; m++, j++){           /* four arcs, open at α, ω, Moon and Sun */
+      k = m % 4; f = Math.floor(m / 4) / Math.max(1, Math.ceil(nRing / 4) - 1);
+      a2 = (45 + 90 * k - 25.4 + 50.8 * f) * DEG;
+      U(50 + 42 * Math.cos(a2), 50 + 42 * Math.sin(a2), j, 0, 0.95);
+    }
+    for(m = 0; m < nDots; m++, j++){           /* four dots on the ring */
+      k = m % 4; a2 = (45 + 90 * k) * DEG; f = Math.floor(m / 4); rr = 1.9 * Math.sqrt((f + 0.3) / Math.max(1, nDots / 4));
+      U(50 + 42.4 * Math.cos(a2) + rr * Math.cos(f * 2.4), 50 + 42.4 * Math.sin(a2) + rr * Math.sin(f * 2.4), j, 0, 1);
+    }
+    var MK = [[50,6.6],[92,50],[50,93.4],[6,50]];
+    for(m = 0; m < nMark; m++, j++){           /* α, Sun, ω, Moon */
+      k = m % 4; f = Math.floor(m / 4); rr = 2.6 * Math.sqrt((f + 0.3) / Math.max(1, nMark / 4));
+      U(MK[k][0] + rr * Math.cos(f * 2.4), MK[k][1] + rr * Math.sin(f * 2.4), j, 0, 0.95);
+    }
+    for(m = 0; m < nRim; m++, j++){            /* the wheel's rim */
+      a2 = 6.2832 * m / nRim; rr = m % 2 ? 25.4 : 22.4;
+      U(50 + rr * Math.cos(a2), 50 + rr * Math.sin(a2), j, 1, 1);
+    }
+    for(m = 0; m < nSpoke; m++, j++){          /* four spokes */
+      k = m % 4; f = Math.floor(m / 4) / Math.max(1, Math.ceil(nSpoke / 4) - 1); rr = 5 + 15.5 * f;
+      a2 = 90 * k * DEG; var lane = (Math.floor(m / 4) % 2 ? 1 : -1) * 1.0;
+      U(50 + rr * Math.cos(a2) - lane * Math.sin(a2), 50 + rr * Math.sin(a2) + lane * Math.cos(a2), j, 1, 1);
+    }
+    for(m = 0; m < nHub; m++, j++){            /* the hub */
+      a2 = 6.2832 * m / Math.max(1, nHub);
+      U(50 + 3 * Math.cos(a2), 50 + 3 * Math.sin(a2), j, 1, 1);
+    }
+
+    /* the official symbol sits exactly where the points form it */
+    var S = 108 * sc;
+    sym.style.width = S + 'px'; sym.style.height = S + 'px';
+    sym.style.left = (cx - S / 2) + 'px'; sym.style.top = (cy - S / 2) + 'px';
+    lastFill = -1; curIdx = -1;
+  }
+
+  function pos(s, i, t){
+    if(s === 3 && isLoop[i] && !reduce){ loopPt(loopU[i] + t * 0.000028, loopO[i]); return; }
+    _x = X[s][i]; _y = Y[s][i];
+    if(s === 0 && !reduce){
+      var w = t * 0.00042 * (0.45 + rnd[i*8 + 6]), p0 = rnd[i*8 + 7] * 6.2832;
+      _x += Math.sin(w + p0) * 8; _y += Math.cos(w * 0.83 + p0 * 1.7) * 8;
+    }
+  }
+
+  function progress(){ return clamp((window.scrollY - top0) / stepH, 0, LAST); }
+
+  function setStep(p){
+    var idx = clamp(Math.round(p), 0, LAST), i;
+    if(idx !== curIdx){
+      curIdx = idx;
+      if(window.NOIMA_step) window.NOIMA_step(idx);
+      for(i = 0; i < steps.length; i++) steps[i].classList.toggle('on', i === idx);
+      for(i = 0; i < pills.length; i++){ pills[i].classList.toggle('on', i === idx); if(i === idx) pills[i].setAttribute('aria-current', 'step'); else pills[i].removeAttribute('aria-current'); }
+    }
+    var f = Math.round(p / LAST * 200) / 200;
+    if(f !== lastFill){ lastFill = f; fill.style.transform = 'scaleX(' + f + ')'; }
+    stage.classList.toggle('done', p >= 3.86);
+  }
+
+  function draw(now){
+    var p = progress(), a = 0, b = 0, e = 0, k, i;
+    for(k = 0; k < KEYS.length; k++){
+      if(p >= KEYS[k][0]){
+        a = KEYS[k][1];
+        if(k + 1 < KEYS.length){ b = KEYS[k + 1][1]; e = (p - KEYS[k][0]) / (KEYS[k + 1][0] - KEYS[k][0]); }
+        else { b = a; e = 0; }
+      }
+    }
+    e = clamp(e, 0, 1);
+    if(a === b) e = 0;
+    if(reduce) e = e < 0.5 ? 0 : 1;
+
+    var bt = (now - burst) / 900, bk = bt >= 0 && bt < 1 ? Math.sin(Math.PI * bt) * (1 - bt * 0.3) : 0;
+
+    for(i = 0; i < N; i++){
+      var ei = e <= 0 ? 0 : e >= 1 ? 1 : ease(clamp(e * 1.4 - rnd[i*8 + 5] * 0.4, 0, 1));
+      pos(a, i, now); var ax = _x, ay = _y;
+      if(ei > 0){ pos(b, i, now); px[i] = ax + (_x - ax) * ei; py[i] = ay + (_y - ay) * ei; }
+      else { px[i] = ax; py[i] = ay; }
+      if(bk){ px[i] += bx[i] * bk; py[i] += by[i] * bk; }
+      pa[i] = AL[a][i] + (AL[b][i] - AL[a][i]) * ei;
+      ph[i] = (HL[a][i] * (1 - ei) + HL[b][i] * ei) > 0.5 ? 1 : 0;
+    }
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    for(var pass = 0; pass < 2; pass++){
+      ctx.fillStyle = pass ? T.acc : T.ink;
+      for(i = 0; i < N; i++){
+        if(ph[i] !== pass) continue;
+        ctx.globalAlpha = pass ? Math.max(0.9, pa[i]) : pa[i];
+        ctx.beginPath();
+        ctx.arc(px[i], py[i], size[i] * (pass ? 1.2 : 1), 0, 6.2832);
+        ctx.fill();
+      }
+    }
+    ctx.globalAlpha = 1;
+    setStep(p);
+  }
+
+  function frame(now){
+    raf = 0;
+    draw(now || performance.now());
+    if(running && !reduce) raf = requestAnimationFrame(frame);
+  }
+  function kick(){ if(!raf) raf = requestAnimationFrame(frame); }
+
+  /* rebuild on width changes only; a phone's URL bar changing the height is ignored */
+  var lastW = window.innerWidth, lastH = window.innerHeight, rt = 0;
+  function onResize(){
+    clearTimeout(rt);
+    rt = setTimeout(function(){
+      var w = window.innerWidth, h = window.innerHeight;
+      if(w === lastW && (mqPhone.matches || Math.abs(h - lastH) < 60)) return;
+      lastW = w; lastH = h;
+      build(); kick();
+    }, 140);
+  }
+
+  function go(i){
+    window.scrollTo({top: Math.round(top0 + i * stepH + (i ? 1 : 0)), behavior: reduce ? 'auto' : 'smooth'});
+  }
+  pills.forEach(function(b, i){ b.addEventListener('click', function(){ go(i); }); });
+
+  /* a tap or click on the stage scatters the points for a moment */
+  stage.addEventListener('pointerdown', function(e){
+    if(e.target.closest('button') || reduce) return;
+    if(stage.classList.contains('done')) return;
+    burst = performance.now(); kick();
+  });
+
+  try{ build(); }catch(err){ return; }
+
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(en){ running = en[0].isIntersecting; if(running) kick(); }, {rootMargin:'80px 0px'}).observe(story);
+  } else { running = true; }
+  window.addEventListener('scroll', function(){ if(running || reduce) kick(); }, {passive:true});
+  window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', onResize);
+  window.addEventListener('load', function(){ build(); kick(); });
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ top0 = story.getBoundingClientRect().top + window.scrollY; });
+  var onMq = function(){ reduce = mqR.matches; kick(); };
+  if(mqR.addEventListener) mqR.addEventListener('change', onMq);
+  kick();
+})();
+
+</script>
+<style id="tone-css">.tone-off>*{opacity:0!important;transition:opacity .3s ease!important}.tone-in>*{transition:opacity .5s ease!important}</style>
+<script>
+/* content of a section only shows while the page ground matches that section (light or navy) */
+(function(){
+  var S=[].slice.call(document.querySelectorAll('[data-ground]')).filter(function(e){return e!==document.body&&e!==document.documentElement&&e.id!=='band'});
+  if(!S.length) return;
+  function dark(e){return e.getAttribute('data-ground')==='navy'}
+  var cur=null;
+  function upd(){
+    var mid=window.innerHeight*0.5, sec=S[0], i;
+    for(i=0;i<S.length;i++){ if(S[i].getBoundingClientRect().top<=mid) sec=S[i]; }
+    var d=dark(sec); if(d===cur) return;
+    var first=cur===null; cur=d;
+    S.forEach(function(e){
+      if(dark(e)!==d){ e.classList.remove('tone-in'); e.classList.add('tone-off'); }
+      else if(e.classList.contains('tone-off')){
+        e.classList.remove('tone-off');
+        if(!first){ e.classList.add('tone-in'); setTimeout(function(){ e.classList.remove('tone-in'); },600); }
+      }
+    });
+  }
+  window.addEventListener('scroll',upd,{passive:true}); window.addEventListener('resize',upd); window.addEventListener('load',upd); upd();
+})();
+</script>
+</body>
+</html>

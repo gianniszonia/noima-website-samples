@@ -328,6 +328,14 @@ button{font:inherit;color:inherit}
   .vis .mv{display:none}
 }
 #name dt{min-height:30px}
+
+/* clients */
+.clients .wrap{width:100%}
+.clients{min-height:0!important;padding-top:0!important}
+.cl-row{list-style:none;margin:48px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px clamp(28px,4vw,64px);align-items:center}
+.cl-row li{position:relative;display:grid;place-items:center;height:104px}
+.cl-row img{grid-area:1/1;max-width:100%;max-height:var(--h,64px);width:auto;height:auto;object-fit:contain}
+@media (max-width:900px){.cl-row{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:32px}.cl-row li{height:88px}}
 </style>
 </head>
 <body>
@@ -625,6 +633,21 @@ button{font:inherit;color:inherit}
         <li class="rv"><b>We stay after the work is done</b><span>When the project is finished, we are still there to maintain it and keep it running.</span></li>
       </ol>
     </div>
+  </div>
+</section>
+
+<section class="sec clients" id="clients" data-ground="ivory">
+  <div class="wrap">
+    <div class="head">
+      <p class="label rv">Clients</p>
+      <h2 class="h2 rv" style="--d:1">People who trust us.</h2>
+    </div>
+      <ul class="cl-row rv">
+        <li style="--h:62px"><img src="../assets/clients/pavlos-gavriel-color.png" alt="Pavlos Gavriel Insurance Agencies &amp; Consultants Ltd" loading="lazy"></li>
+        <li style="--h:68px"><img src="../assets/clients/sofocles-kyprianou-color.png" alt="Sofocles Kyprianou" loading="lazy"></li>
+        <li style="--h:78px"><img src="../assets/clients/cyview-developers-color.png" alt="Cyview Developers" loading="lazy"></li>
+        <li style="--h:32px"><img src="../assets/clients/takis-angelides-furnihome-color.png" alt="Takis Angelides Furnihome" loading="lazy"></li>
+      </ul>
   </div>
 </section>
 

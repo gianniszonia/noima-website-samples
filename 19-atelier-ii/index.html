@@ -52,7 +52,7 @@ h3{font-size:clamp(22px,2.1vw,28px);line-height:1.2;letter-spacing:-.01em;font-w
 .head{position:fixed;inset:0 0 auto 0;z-index:60;height:var(--head);background:var(--ground);border-bottom:1px solid var(--rule)}
 .head .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px;max-width:1320px}
 .logo{position:relative;display:block;width:176px;flex:none}
-.logo img{width:100%;height:auto;transition:opacity .35s ease}
+.logo img{width:100%;height:auto}
 .logo .d{position:absolute;inset:0;opacity:0}
 body[data-g="navy"] .logo .l{opacity:0}
 body[data-g="navy"] .logo .d{opacity:1}
@@ -374,6 +374,14 @@ body.closed .fly{opacity:0!important;transition:opacity .25s ease .45s}
   .bars i{transform:none;transition:none}
   .tabbar .ind{transition:none}
 }
+
+/* clients */
+.clients .wrap{width:100%}
+.clients{min-height:0!important;padding-top:0!important}
+.cl-row{list-style:none;margin:48px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px clamp(28px,4vw,64px);align-items:center}
+.cl-row li{position:relative;display:grid;place-items:center;height:104px}
+.cl-row img{grid-area:1/1;max-width:100%;max-height:var(--h,64px);width:auto;height:auto;object-fit:contain}
+@media (max-width:900px){.cl-row{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:32px}.cl-row li{height:88px}}
 </style>
 </head>
 <body data-g="ivory">
@@ -710,6 +718,21 @@ body.closed .fly{opacity:0!important;transition:opacity .25s ease .45s}
         <dl><dt>Focus</dt><dd>Dashboards, BI, analytics products, AI</dd><dt>Based in</dt><dd>Nicosia</dd></dl>
       </article>
     </div>
+  </div>
+</section>
+
+<section class="sec clients" id="clients" data-ground="ivory" data-tab="2">
+  <div class="wrap">
+    <div class="cl-head">
+      <p class="label rv">Clients</p>
+      <h2 class="rv" style="--d:1">People who trust us.</h2>
+    </div>
+      <ul class="cl-row rv">
+        <li style="--h:62px"><img src="../assets/clients/pavlos-gavriel-color.png" alt="Pavlos Gavriel Insurance Agencies &amp; Consultants Ltd" loading="lazy"></li>
+        <li style="--h:68px"><img src="../assets/clients/sofocles-kyprianou-color.png" alt="Sofocles Kyprianou" loading="lazy"></li>
+        <li style="--h:78px"><img src="../assets/clients/cyview-developers-color.png" alt="Cyview Developers" loading="lazy"></li>
+        <li style="--h:32px"><img src="../assets/clients/takis-angelides-furnihome-color.png" alt="Takis Angelides Furnihome" loading="lazy"></li>
+      </ul>
   </div>
 </section>
 

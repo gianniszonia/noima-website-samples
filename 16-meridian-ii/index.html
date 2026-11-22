@@ -63,7 +63,7 @@ h3{font-size:20px;line-height:1.3;font-weight:600;letter-spacing:-.005em}
 .hdr{position:sticky;top:0;z-index:60;background:var(--g);border-bottom:1px solid var(--line);height:var(--hdr)}
 .hdr .wrap{height:100%;display:flex;align-items:center;gap:32px;max-width:none}
 .logo2{position:relative;display:block}
-.logo2 img{width:176px;height:auto;transition:opacity .35s ease}
+.logo2 img{width:176px;height:auto}
 .logo2 .lg-d{position:absolute;left:0;top:0;opacity:0}
 html[data-ground="navy"] .hdr .logo2 .lg-l{opacity:0}
 html[data-ground="navy"] .hdr .logo2 .lg-d{opacity:1}
@@ -446,6 +446,14 @@ details[open] .plus::after{transform:rotate(0)}
   .play .pipe .run{animation:none}
   .cols i,.sheet li,.dock,.btn{transition:none!important}
 }
+
+/* clients */
+.clients .wrap{width:100%}
+.clients{min-height:0!important;padding-top:0!important}
+.cl-row{list-style:none;margin:48px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px clamp(28px,4vw,64px);align-items:center}
+.cl-row li{position:relative;display:grid;place-items:center;height:104px}
+.cl-row img{grid-area:1/1;max-width:100%;max-height:var(--h,64px);width:auto;height:auto;object-fit:contain}
+@media (max-width:900px){.cl-row{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:32px}.cl-row li{height:88px}}
 </style>
 </head>
 <body>
@@ -784,6 +792,21 @@ details[open] .plus::after{transform:rotate(0)}
       <li class="rv" style="--d:2"><h3>New tools only when necessary</h3><p>We work with what you already have and suggest a new tool only when it is necessary.</p></li>
       <li class="rv" style="--d:3"><h3>We stay after the work is done</h3><p>When the project is finished, we are still there to maintain it and keep it running.</p></li>
     </ol>
+  </div>
+</section>
+
+<section class="block clients" id="clients" data-ground="ivory">
+  <div class="wrap">
+    <div class="cl-head">
+      <p class="label rv">Clients</p>
+      <h2 class="rv" style="--d:1">People who trust us.</h2>
+    </div>
+      <ul class="cl-row rv">
+        <li style="--h:62px"><img src="../assets/clients/pavlos-gavriel-color.png" alt="Pavlos Gavriel Insurance Agencies &amp; Consultants Ltd" loading="lazy"></li>
+        <li style="--h:68px"><img src="../assets/clients/sofocles-kyprianou-color.png" alt="Sofocles Kyprianou" loading="lazy"></li>
+        <li style="--h:78px"><img src="../assets/clients/cyview-developers-color.png" alt="Cyview Developers" loading="lazy"></li>
+        <li style="--h:32px"><img src="../assets/clients/takis-angelides-furnihome-color.png" alt="Takis Angelides Furnihome" loading="lazy"></li>
+      </ul>
   </div>
 </section>
 
